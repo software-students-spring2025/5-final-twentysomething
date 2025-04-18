@@ -1,0 +1,16 @@
+name: MongoDB Subsystem
+
+on:
+  push:
+    paths:
+      - "mongo-db/**"
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Print setup info
+        run: echo "MongoDB runs using docker-compose. No build step required."
