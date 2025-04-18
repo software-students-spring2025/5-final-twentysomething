@@ -8,6 +8,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    environment:
+      - MONGO_URI=${MONGO_URI}
 
   web-app:
     build:
@@ -20,6 +22,8 @@ services:
       - MONGO_URI=mongodb://mongo:27017
     depends_on:
       - mongo
+    env_file:
+      - .env
 
 volumes:
   mongo_data:
