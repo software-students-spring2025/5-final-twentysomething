@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login | Cocktail Generator</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap" rel="stylesheet" />
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
+    </head>
+    <body>
+        <section class="login-page">
+            <h1>COCKTAIL GENERATOR</h1>
+
+            <div class="login-box">
+                <h2>Login</h2>
+                <form id="login-form" method="POST" action="/login">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required />
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required />
+                </form>
+
+                <button type="submit" class="login-btn" onclick="document.getElementById('login-form').submit();">LOGIN</button>
+
+                <p class="signup-text">
+                    Don’t have an account? <a href="/signup">Sign Up</a>
+                </p>
+            </div>
+        </section>
+    </body>
+</html>
