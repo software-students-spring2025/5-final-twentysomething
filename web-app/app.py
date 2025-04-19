@@ -3,7 +3,7 @@ from flask import Flask, render_template
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -17,6 +17,10 @@ users = db["users"]
 @app.route("/")
 def home():
     return render_template("landing.html")
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
 
 
 if __name__ == "__main__":

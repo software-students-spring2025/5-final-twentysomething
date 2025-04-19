@@ -20,6 +20,9 @@ services:
       - mongo
     env_file:
       - .env
+    volumes:
+      - ./web-app/templates:/app/templates
+      - ./web-app/static:/app/static
 
 volumes:
   mongo_data:
