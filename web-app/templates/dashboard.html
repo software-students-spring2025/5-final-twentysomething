@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Cocktail Generator{% endblock %}
+
+{% block content %}
+  <div class="dashboard-content">
+    <h2>Welcome, {{ session['username'] }}!</h2>
+    <p>Choose an option from the sidebar to get started.</p>
+  </div>
+{% endblock %}

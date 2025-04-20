@@ -58,7 +58,8 @@ def login():
 def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
-    return f"Welcome to your dashboard, {session['username']}!"
+    return render_template("dashboard.html", username=session["username"])
+
 
 
 @app.route("/saved")
@@ -108,4 +109,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=5001, debug=True)

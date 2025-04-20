@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cocktail Generator</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <script>
+    function toggleMenu() {
+      document.getElementById("sidebar").classList.toggle("open");
+    }
+  </script>
+</head>
+<body>
+  <header class="navbar">
+    <button class="menu-btn" onclick="toggleMenu()">
+      <img src="{{ url_for('static', filename='img/icon.svg') }}" alt="Menu" class="menu-icon">
+    </button>    
+    <h1 class="title">COCKTAIL GENERATOR</h1>
+    <a href="/logout" class="logout">Logout</a>
+  </header>
+
+  <aside id="sidebar" class="sidebar">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/search">Search Recipes</a>
+    <a href="/saved">My Saved Recipes</a>
+    <a href="/spin">Spin The Wheel</a>
+    <a href="/questionnaire">Questionnaire</a>
+  </aside>
+
+  <div class="main-content">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

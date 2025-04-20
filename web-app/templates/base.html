@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Cocktail Generator{% endblock %}</title>
+      
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+        {% block head %}{% endblock %}
+        
+        <script>
+          function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+          }
+        </script>
+      </head>      
+<body>
+  {% include "/header.html" %}
+
+  <div class="main-content">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
+

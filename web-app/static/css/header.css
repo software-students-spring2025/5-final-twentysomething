@@ -1,0 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Playfair Display', serif;
+    background-color: #111;
+    color: #F0DAB4;
+  }
+  
+  .navbar {
+    background-color: #150C04;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    border-bottom: 2px solid #F0DAB4;
+  }
+  
+  .title {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+  }
+  
+  .logout {
+    color: #F0DAB4;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2rem; 
+    letter-spacing: 0.05rem; 
+  }
+  
+  .menu-btn {
+    font-size: 1.0rem;
+    background: none;
+    border: none;
+    color: #F0DAB4;
+    cursor: pointer;
+  }
+
+  .menu-icon {
+    width: 25px; 
+    height: 25px;
+  }
+  
+  .sidebar {
+    background-color: #1E130B;
+    width: 250px;
+    height: 40vh;
+    position: fixed;
+    top: 90px;
+    left: -250px;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border-right: 2px solid #F0DAB4; 
+    border-bottom: 2px solid #F0DAB4; 
+    
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .sidebar a {
+    color: #F0DAB4;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.05rem;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 2rem;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .sidebar.open ~ .main-content {
+    margin-left: 250px;
+  }
+  
