@@ -58,13 +58,13 @@ def login():
 def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
-    return f"Welcome to your dashboard, {session['username']}!"
+    return render_template("dashboard.html", username=session["username"])
 
 
 @app.route("/saved")
 def saved():
-    # if "username" not in session:
-    #     return redirect(url_for("login"))
+    if "username" not in session:
+        return redirect(url_for("login"))
     return render_template("saved.html")
 
 

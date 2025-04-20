@@ -17,15 +17,6 @@ a {
     text-decoration: none;
 }
 
-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5em;
-    border: 1px solid #F0DAB4;
-}
-
 h1 {
     font-size: 1.5em;
     letter-spacing: 0.15em;
@@ -34,15 +25,6 @@ h1 {
 h2 {
     font-size: 1.3em;
     margin-bottom: 1em;
-}
-
-i {
-    color: #F0DAB4;
-    margin-left: 1em;
-}
-
-.logout {
-    margin-right: 1em;
 }
 
 .content {
