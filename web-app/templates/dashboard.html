@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Cocktail Generator{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-container">
+  <div class="welcome-msg">
+    <h1>Hello {{ session['username'] }},</h1>
+    <h2>Welcome to your dashboard!</h2>
+  </div>
+
+  <div class="dashboard-layout">
+    <div class="profile">
+      <img src="{{ url_for('static', filename='img/profile.svg') }}" alt="Profile" />
+    </div>
+
+    <div class="dashboard-buttons">
+      <a href="/search" class="dash-btn">Search Recipes</a>
+      <a href="/saved" class="dash-btn">My Saved Recipes</a>
+      <p class="subtext">Not Sure What Drink to Make?<br>No problem.</p>
+      <a href="/spin" class="dash-btn">Spin The Wheel</a>
+      <a href="/questionnaire" class="dash-btn">Questionnaire</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

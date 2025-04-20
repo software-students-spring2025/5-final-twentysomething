@@ -21,6 +21,7 @@ services:
     env_file:
       - .env
     volumes:
+      - ./web-app:/app
       - ./web-app/templates:/app/templates
       - ./web-app/static:/app/static
 

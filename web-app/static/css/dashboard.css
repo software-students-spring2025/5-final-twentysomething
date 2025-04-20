@@ -1,0 +1,79 @@
+body {
+    background-color: #160E04 !important;
+  }
+  
+  .dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    color: #F0DAB4;
+  }
+  
+  .welcome-msg h1,
+  .welcome-msg h2 {
+    font-family: 'Playfair Display SC', serif;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+  
+  .welcome-msg h1 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .welcome-msg h2 {
+    font-size: 1.8rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .dashboard-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6rem;
+    margin-top: 2rem;
+  }
+  
+  .profile img {
+    width: 500px;
+    height: auto;
+    border-radius: 50%;
+  }
+  
+  .dashboard-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .dash-btn {
+    background-color: #F2DFBA;
+    color: #150C04;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    padding: 1rem 3rem;
+    margin: 0.8rem 0;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.05rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    width: 280px;
+    display: inline-block;
+  }
+  
+  .dash-btn:hover {
+    background-color: #d9c7a3;
+    transform: scale(1.05);
+  }
+  
+  .subtext {
+    font-size: 1rem;
+    font-style: italic;
+    margin: 0.8rem 0;
+    text-align: center;
+  }
+  
