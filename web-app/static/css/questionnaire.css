@@ -104,7 +104,7 @@ input{
     padding: 30px;
 }
 
-.generate_button{
+.generate-button{
     font-family: 'Playfair Display', serif;
     color: #F0DAB4;
     background-color: #150C04;
@@ -117,7 +117,7 @@ input{
     font-size: 13pt;
 }
 
-.generate_button:hover{
+.generate-button:hover{
     background-color: #F2DFBA;
     color: #150C04;
     cursor: pointer;
