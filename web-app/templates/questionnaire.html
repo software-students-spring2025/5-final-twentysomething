@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Questionnaire | Cocktail Generator{% endblock %}
+
+{% block head %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaire.css') }}" />
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <h2>Questionnaire</h2>
+        <h3>Receive a recommended drink recipe by clicking the best description of your event. And then click GENERATE to get your result.</h3>
+
+        <form action="/questionnaire" method="POST">  
+            <div class="questions">
+                <div class="event_type">
+                    <h3 class="heading">Type of Event</h3>
+
+                    <input type="radio" id="business" name="event" value="business">
+                    <label for="business">Business</label><br>
+
+                    <input type="radio" id="pregame" name="event" value="pregame">
+                    <label for="pregame">Pregame</label><br>
+
+                    <input type="radio" id="chill" name="event" value="chill">
+                    <label for="chill">Chill</label><br>
+
+                    <input type="radio" id="dinner" name="event" value="dinner">
+                    <label for="dinner">Dinner</label><br>
+
+                    <input type="radio" id="party" name="event" value="party">
+                    <label for="party">Party</label><br>
+                </div>
+
+                <div class="location">
+                    <h3 class="heading">Location</h3>
+
+                    <input type="radio" id="corporation" name="location" value="corporation">
+                    <label for="corporation">Corporation</label><br>
+
+                    <input type="radio" id="house" name="location" value="house">
+                    <label for="house">House</label><br>
+
+                    <input type="radio" id="outdoors" name="location" value="outdoors">
+                    <label for="outdoors">Outdoors</label><br>
+
+                    <input type="radio" id="restaurant-venue" name="location" value="restaurant-venue">
+                    <label for="restaurant-venue">Restaurant/Venue</label><br>
+                </div>
+
+                <div class="attendees">
+                    <h3 class="heading">Attendees</h3>
+
+                    <input type="radio" id="close-friends-families" name="attendees" value="close-friends-families">
+                    <label for="close-friends-families">Close Friends/Families</label><br>
+
+                    <input type="radio" id="large-group" name="attendees" value="large-group">
+                    <label for="large-group">Large Group</label><br>
+
+                    <input type="radio" id="unknown" name="attendees" value="unknown">
+                    <label for="unknown">Unknown</label><br>
+                </div>
+            </div>
+
+            <div class="button-wrapper">
+                <button type="submit" class="generate-button">GENERATE</button>
+            </div>
+        </form>
+
+        <div class="result">
+            <div class="box">
+                <p>Generated cocktail img</p>
+            </div>
+
+            <div class="box">
+                <p>Generated cocktail recipe</p>
+            </div>
+        </div>        
+    </section>
+{% endblock %}

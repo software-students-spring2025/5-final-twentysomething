@@ -99,6 +99,17 @@ def recipe(recipe_id):
     except requests.exceptions.RequestException as e:
         print("Error:", e)
         return "Recipe not found."
+    
+@app.route("/spin")
+def spin():
+    return render_template("spin.html")
+    
+@app.route("/questionnaire", methods=["GET", "POST"])
+def questionnaire():
+    if request.method == "POST":
+        pass
+
+    return render_template("questionnaire.html")
 
 
 @app.route("/logout")
