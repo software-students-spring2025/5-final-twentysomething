@@ -51,7 +51,7 @@
   .sidebar {
     background-color: #1E130B;
     width: 250px;
-    height: 40vh;
+    height: 35vh;
     position: fixed;
     top: 90px;
     left: -250px;
@@ -72,10 +72,16 @@
   .sidebar a {
     color: #F0DAB4;
     text-decoration: none;
-    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+    margin-bottom: 1.45rem;
     font-size: 1.1rem;
     font-weight: 500;
-    letter-spacing: 0.05rem;
+    letter-spacing: 0.15rem;
+  }
+  
+  .sidebar a:hover {
+    transform: scale(1.05); 
+    color: #d6c08c; 
   }
   
   .main-content {
