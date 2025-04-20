@@ -33,6 +33,7 @@ h1 {
 
 h2 {
     font-size: 1.3em;
+    margin-bottom: 1em;
 }
 
 i {
@@ -50,30 +51,32 @@ i {
     justify-content: center;
     align-items: center;
     margin: 2em;
+    
 }
 
-.recipes {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2em;
-    margin-top: 2em;
-}
-
-.recipe-row {
+.recipe {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
+    width: 80%;
+    margin-top: 3em;
+    line-height: 1.5;
 }
 
-.placeholder {
-    width: 200px;
-    height: 200px;
-    background-color: #D9D9D9;
+.ingredients {
+    margin-right: 5em;
 }
 
-.recipe-name {
+.instructions {
+    margin-left: 5em;
+}
+
+.line {
+    border-left: 1px solid #F0DAB4;
+    height: 200px
+}
+
+.glass {
+    font-size: 0.8em;
     margin-top: 1em;
-    letter-spacing: 0.1em;
-    font-size: 1.2em;
 }
