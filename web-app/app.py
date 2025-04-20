@@ -99,6 +99,13 @@ def recipe(recipe_id):
     except requests.exceptions.RequestException as e:
         print("Error:", e)
         return "Recipe not found."
+    
+@app.route("/questionnaire", methods=["GET", "POST"])
+def questionnaire():
+    if request.method == "POST":
+        pass
+
+    return render_template("questionnaire.html")
 
 
 @app.route("/logout")
@@ -108,4 +115,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=5001, debug=True)
