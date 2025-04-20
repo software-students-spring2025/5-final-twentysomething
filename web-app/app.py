@@ -15,9 +15,11 @@ client = MongoClient(os.getenv("MONGO_URI"))
 db = client["mydb"]
 users = db["users"]
 
+
 @app.route("/")
 def home():
     return render_template("landing.html")
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -34,6 +36,7 @@ def signup():
 
     return render_template("signup.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -49,16 +52,26 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route("/dashboard")
 def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
     return f"Welcome to your dashboard, {session['username']}!"
 
+
+@app.route("/saved")
+def saved():
+    # if "username" not in session:
+    #     return redirect(url_for("login"))
+    return render_template("saved.html")
+
+
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
