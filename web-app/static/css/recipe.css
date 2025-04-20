@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Playfair Display', serif;
+    color: #F0DAB4;
+    background-color: #150C04;
+}
+
+a {
+    color: #F0DAB4;
+    text-decoration: none;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em;
+    border: 1px solid #F0DAB4;
+}
+
+h1 {
+    font-size: 1.5em;
+    letter-spacing: 0.15em;
+}
+
+h2 {
+    font-size: 1.3em;
+    margin-bottom: 1em;
+}
+
+i {
+    color: #F0DAB4;
+    margin-left: 1em;
+}
+
+.logout {
+    margin-right: 1em;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2em;
+    
+}
+
+.recipe {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 80%;
+    margin-top: 3em;
+    line-height: 1.5;
+}
+
+.ingredients {
+    margin-right: 5em;
+}
+
+.instructions {
+    margin-left: 5em;
+}
+
+.line {
+    border-left: 1px solid #F0DAB4;
+    height: 200px
+}
+
+.glass {
+    font-size: 0.8em;
+    margin-top: 1em;
+}

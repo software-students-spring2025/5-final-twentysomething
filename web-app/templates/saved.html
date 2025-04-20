@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Recipes | Cocktail Generator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/saved.css') }}" />
+</head>
+
+<body>
+    <header>
+        <i class="fa-solid fa-bars fa-lg"></i>
+        <h1 class="title">COCKTAIL GENERATOR</h1>
+        <p class="logout"><a href="/logout">Logout</a></p>
+    </header>
+
+    <section class="content">
+        <h1>My Saved Recipes</h1>
+        <div class="recipes">
+            <div class="recipe-row">
+                <div class="placeholder"></div>
+                <p class="recipe-name"><a href="/recipe/12089">Old Fashioned</a></p>
+            </div>
+            <div class="recipe-row">
+                <div class="placeholder"></div>
+                <p class="recipe-name"><a href=/recipe/11007>Margarita</a></p>
+            </div>
+            <div class="recipe-row">
+                <div class="placeholder"></div>
+                <p class="recipe-name"><a href="/recipe/17196">Cosmopolitan</a></p>
+            </div>
+            <div class="recipe-row">
+                <div class="placeholder"></div>
+                <p class="recipe-name"><a href=/recipe/11004>Whiskey Sour</a></p>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
