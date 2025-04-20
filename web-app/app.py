@@ -61,11 +61,10 @@ def dashboard():
     return render_template("dashboard.html", username=session["username"])
 
 
-
 @app.route("/saved")
 def saved():
-    # if "username" not in session:
-    #     return redirect(url_for("login"))
+    if "username" not in session:
+        return redirect(url_for("login"))
     return render_template("saved.html")
 
 

@@ -52,7 +52,7 @@
   .sidebar {
     background-color: #1E130B;
     width: 250px;
-    height: 35vh;
+    height: 100vh;
     position: fixed;
     top: 90px;
     left: -250px;
