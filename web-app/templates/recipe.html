@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ cocktail.strDrink }} | Cocktail Generator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recipe.css') }}" />
+</head>
+
+<body>
+    <header>
+        <i class="fa-solid fa-bars fa-lg"></i>
+        <h1 class="title">COCKTAIL GENERATOR</h1>
+        <p class="logout"><a href="/logout">Logout</a></p>
+    </header>
+
+    <section class="content">
+        <h1>{{ cocktail.strDrink }}</h1>
+        <p class="glass"><strong>Glass:</strong> {{ cocktail.strGlass }}</p>
+        <div class="recipe">
+            <!-- <img src="{{ cocktail.strDrinkThumb }}" alt="Cocktail image" /> -->
+            <div class="ingredients">
+                <h2>Ingredients</h2>
+                <ul>
+                    {% for item in ingredients %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="line">
+                <div class="instructions">
+                    <h2>Instructions</h2>
+                    <p>{{ cocktail.strInstructions }}</p>
+                </div>
+            </div>
+    </section>
+</body>
+
+</html>
