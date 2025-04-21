@@ -75,39 +75,51 @@ def saved():
     return render_template("saved.html", saved=saved_drinks)
 
 
-@app.route("/recipe/<recipe_id>")
+@app.route("/recipe/<recipe_id>", methods=["GET", "POST"])
 def recipe(recipe_id):
-    try:
-        response = requests.get(
-            f'http://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}'
-        )
-        response.raise_for_status()
+    if request.method == "GET":
+        try:
+            response = requests.get(
+                f'http://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}'
+            )
+            response.raise_for_status()
 
-        data = response.json()
+            data = response.json()
 
-        # Check if recipe exists
-        drinks = data.get("drinks")
-        if not drinks:
+            # Check if recipe exists
+            drinks = data.get("drinks")
+            if not drinks:
+                return "Recipe not found."
+
+            # Get ingredients
+            cocktail = drinks[0]
+            ingredients = []
+            image = cocktail['strDrinkThumb']
+
+            for i in range(1, 16):
+                ing = cocktail.get(f"strIngredient{i}")
+                meas = cocktail.get(f"strMeasure{i}")
+                if ing:
+                    ingredients.append(f"{meas or ''} {ing}".strip())
+
+            return render_template("recipe.html",
+                                   cocktail=cocktail,
+                                   ingredients=ingredients,
+                                   image=image)
+        except requests.exceptions.RequestException as e:
+            print("Error:", e)
             return "Recipe not found."
 
-        # Get ingredients
-        cocktail = drinks[0]
-        ingredients = []
-        image = data['drinks'][0]['strDrinkThumb']
+    # hardcoded ObjectID for testing——replace with ObjectID of signed in user
+    user_id = ObjectId("68069175df061bbac7aefede")
+    users.update_one({"_id": user_id},
+                     {"$pull": {
+                         "saved_drinks": {
+                             "id": recipe_id
+                         }
+                     }})
 
-        for i in range(1, 16):
-            ing = cocktail.get(f"strIngredient{i}")
-            meas = cocktail.get(f"strMeasure{i}")
-            if ing:
-                ingredients.append(f"{meas or ''} {ing}".strip())
-
-        return render_template("recipe.html",
-                               cocktail=cocktail,
-                               ingredients=ingredients,
-                               image=image)
-    except requests.exceptions.RequestException as e:
-        print("Error:", e)
-        return "Recipe not found."
+    return redirect(url_for("saved"))
 
 
 @app.route("/spin")
