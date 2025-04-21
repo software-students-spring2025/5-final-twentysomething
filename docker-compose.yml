@@ -6,6 +6,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    
 
   web-app:
     build:
@@ -16,6 +17,7 @@ services:
       - "5001:5001"
     environment:
       - MONGO_URI=${MONGO_URI}
+      - SECRET_KEY=${SECRET_KEY} 
     depends_on:
       - mongo
     volumes:
