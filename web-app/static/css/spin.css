@@ -47,3 +47,124 @@ i {
     align-items: center;
     margin: 2em;
 }
+
+/* specific styling for the spin page */
+h2{
+    font-size: 2em;
+    letter-spacing: 0.15em;
+}
+
+h3{
+    padding: 15px;
+    width: 40%;
+    text-align: center;
+    letter-spacing: 0.15em;
+}
+
+.bottom-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.wheel-wrapper{
+    position: relative;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pointer{
+    border-left: solid 20px transparent;
+    border-right: solid 20px transparent;
+    border-top: solid 50px #F0DAB4;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.wheel{
+    padding: 30px;
+}
+
+.button-wrapper{
+    text-align: center;
+    padding: 30px;
+}
+
+.spin-button{
+    font-family: 'Playfair Display', serif;
+    color: #F0DAB4;
+    background-color: #150C04;
+    border: solid 2.5px #F0DAB4;
+    border-radius: 20px;
+    width: 250px;
+    height: 45px;
+    text-align: center;
+    letter-spacing: 0.15em;
+    font-size: 13pt;
+}
+
+.spin-button:hover{
+    background-color: #F2DFBA;
+    color: #150C04;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+.result{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.output-title{
+    font-size: 18pt;
+    width: 100%;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.box{
+    padding: 30px;
+    background-color: #1F130A;
+    border: solid 1px #F0DAB4;
+    border-radius: 10px;
+    flex: 1;
+    width: 500px;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+img{
+    width: 300px;
+    height: auto;
+}
+
+h4{
+    font-size: 14pt;
+    font-weight: bolder;
+}
+
+li{
+    margin-left: 15px;
+}
+
+#image{
+    text-align: center;
+}
+
+#recipe{
+    align-items: left;
+}
+
+/* responsive */
+@media (max-width: 600px){
+    .bottom-wrapper{
+        flex-direction: column;
+    }
+}
