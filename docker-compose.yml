@@ -15,11 +15,9 @@ services:
     ports:
       - "5001:5001"
     environment:
-      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_URI=${MONGO_URI}
     depends_on:
       - mongo
-    env_file:
-      - .env
     volumes:
       - ./web-app:/app
       - ./web-app/templates:/app/templates

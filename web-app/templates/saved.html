@@ -3,36 +3,26 @@
 {% block title %}Saved Recipes | Cocktail Generator{% endblock %}
 
 {% block head %}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
+    rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/saved.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/saved.css') }}" />
 {% endblock %}
 
 {% block content %}
-    <section class="content">
-        <h1>My Saved Recipes</h1>
-        <div class="recipes">
-            <div class="recipe-row">
-                <div class="placeholder"></div>
-                <p class="recipe-name"><a href="/recipe/12089">Old Fashioned</a></p>
-            </div>
-            <div class="recipe-row">
-                <div class="placeholder"></div>
-                <p class="recipe-name"><a href=/recipe/11007>Margarita</a></p>
-            </div>
-            <div class="recipe-row">
-                <div class="placeholder"></div>
-                <p class="recipe-name"><a href="/recipe/17196">Cosmopolitan</a></p>
-            </div>
-            <div class="recipe-row">
-                <div class="placeholder"></div>
-                <p class="recipe-name"><a href=/recipe/11004>Whiskey Sour</a></p>
-            </div>
+<section class="content">
+    <h1>My Saved Recipes</h1>
+    <div class="recipes">
+        {% for drink in saved %}
+        <div class="recipe-row">
+            <a href="/recipe/{{ drink.id }}"><img src="{{ drink.image }}" class="drink-image" width="200"
+                    height="200"></a>
+            <p class="recipe-name"><a href="/recipe/{{ drink.id }}">{{ drink.name }}</a></p>
         </div>
-    </section>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}
