@@ -3,6 +3,7 @@ import requests
 from flask import Flask, render_template, request, redirect, url_for, session
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -65,7 +66,13 @@ def dashboard():
 def saved():
     if "username" not in session:
         return redirect(url_for("login"))
-    return render_template("saved.html")
+
+    # hardcoded ObjectID for testing——replace with ObjectID of signed in user
+    user_id = ObjectId("68069175df061bbac7aefede")
+    user = users.find_one({"_id": user_id})
+    saved_drinks = user["saved_drinks"]
+
+    return render_template("saved.html", saved=saved_drinks)
 
 
 @app.route("/recipe/<recipe_id>")
@@ -86,6 +93,7 @@ def recipe(recipe_id):
         # Get ingredients
         cocktail = drinks[0]
         ingredients = []
+        image = data['drinks'][0]['strDrinkThumb']
 
         for i in range(1, 16):
             ing = cocktail.get(f"strIngredient{i}")
@@ -95,15 +103,18 @@ def recipe(recipe_id):
 
         return render_template("recipe.html",
                                cocktail=cocktail,
-                               ingredients=ingredients)
+                               ingredients=ingredients,
+                               image=image)
     except requests.exceptions.RequestException as e:
         print("Error:", e)
         return "Recipe not found."
-    
+
+
 @app.route("/spin")
 def spin():
     return render_template("spin.html")
-    
+
+
 @app.route("/questionnaire", methods=["GET", "POST"])
 def questionnaire():
     if request.method == "POST":

@@ -1,59 +1,57 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  html,
-  body {
-    height: 100%;
-    font-family: 'Playfair Display', serif;
-    color: #F0DAB4;
-    background-color: #150C04;
-  }
-  
-  a {
-    color: #F0DAB4;
-    text-decoration: none;
-  }
-  
-  .content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 2em;
-  }
-  
-  .content h1 {
-    font-size: 1.8em;
-    letter-spacing: 0.1em;
-    margin-bottom: 1em;
-  }
-  
-  .recipes {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2em;
-    margin-top: 2em;
-  }
-  
-  .recipe-row {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .placeholder {
-    width: 200px;
-    height: 200px;
-    background-color: #D9D9D9;
-  }
-  
-  .recipe-name {
-    margin-top: 1em;
-    letter-spacing: 0.1em;
-    font-size: 1.2em;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: 'Playfair Display', serif;
+  color: #F0DAB4;
+  background-color: #160E04 !important;
+}
+
+a {
+  color: #F0DAB4;
+  text-decoration: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+}
+
+.content h1 {
+  font-size: 1.8em;
+  letter-spacing: 0.1em;
+  margin-bottom: 1em;
+}
+
+.recipes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2em;
+  margin-top: 2em;
+}
+
+.recipe-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.drink-image {
+  width: 200px;
+  height: 200px;
+}
+
+.recipe-name {
+  margin-top: 1em;
+  letter-spacing: 0.1em;
+  font-size: 1.2em;
+}

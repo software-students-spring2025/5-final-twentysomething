@@ -32,8 +32,8 @@ h2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 2em;
-    
+    margin: 1em;
+
 }
 
 .recipe {
@@ -46,19 +46,26 @@ h2 {
 }
 
 .ingredients {
-    margin-right: 5em;
+    margin-right: 1em;
 }
 
 .instructions {
-    margin-left: 5em;
+    margin-left: 1em;
 }
 
 .line {
     border-left: 1px solid #F0DAB4;
-    height: 200px
+    height: 200px;
+    margin-left: 2em;
+    margin-right: 2em;
 }
 
 .glass {
     font-size: 0.8em;
     margin-top: 1em;
+}
+
+.drink-image {
+    width: 200px;
+    height: 200px;
 }
