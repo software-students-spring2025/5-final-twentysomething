@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/spin.css') }}" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zarocknz/javascript-winwheel@2.7.0/Winwheel.min.js" onload="getDrinks()"></script>
 {% endblock %}
 
 {% block content %}
@@ -17,21 +20,110 @@
         <h2>Spin the Wheel</h2>
         <h3>Receive a random drink recipe by spinning the wheel! Press SPIN to begin.</h3>
 
-        <div class="wheel-wrapper">
-            <canvas id="wheel" class="wheel" width="300px" height="300px"></canvas>
-
-            <button class="spin-button">SPIN</button>
-
-            <div class="result">
-                <div class="box">
-                    <p>Generated cocktail img</p>
-                </div>
-    
-                <div class="box">
-                    <p>Generated cocktail recipe</p>
+        <div class="bottom-wrapper">
+            <div class="wheel-wrapper">
+                <div class="pointer"></div>
+                <canvas id="wheel" class="wheel" width="600px" height="600px"></canvas>
+                
+                <div class="button-wrapper">
+                    <button id="spin-button" class="spin-button" onclick="spinWheel()">SPIN</button>
                 </div>
             </div>
+           
+            <div id="result" class="result"></div>
 
         </div>
     </section>
+
+    <script>
+        let drinks = [];
+        let wheel;
+        
+        async function getDrinks(){
+            for (let i = 0; i < 10; i++){
+                const response = await fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php");
+                const data = await response.json();
+
+                if (drinks.includes(data.drinks[0])){
+                    i--;
+                }
+                else{
+                    drinks.push(data.drinks[0])
+                }
+            }
+
+            const options = drinks.map(d => ({
+                fillStyle: "#1F1104",
+                text: d.strDrink,
+                textFontFamily: "Playfair Display",
+                textFontSize: 14,
+                textFillStyle: "#F0DAB4",
+                strokeStyle: "#F0DAB4"
+            }));
+
+            wheel = new Winwheel({
+                canvasId: "wheel",
+                numSegments: options.length,
+                lineWidth: 3,
+                outerRadius: 280,
+                segments: options,
+                pointerAngle: 0,
+                animation: {
+                    type: "spinToStop",
+                    duration: 1, 
+                    spins: 10,
+                    callbackFinished: outputResult
+                }
+            });
+            
+        }
+
+        async function outputResult(result){
+            const output_drink = drinks.find(d => d.strDrink == result.text)
+
+            if (output_drink){
+                const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${output_drink.idDrink}`);
+                const data = await response.json();
+                const drink_data = data.drinks[0]
+
+                const instructions = drink_data.strInstructions;
+                let ingredients = "";
+
+                for (let i = 1; i < 16; i++){
+                    const current_ingredient = drink_data[`strIngredient${i}`];
+                    const ingredient_measure = drink_data[`strMeasure${i}`];
+
+                    if (current_ingredient){
+                        ingredients += `<li>${ingredient_measure || ""} ${current_ingredient}</li>`;
+                    }
+                }
+
+                const html = `
+                    <h3 class="output-title">${drink_data.strDrink}</h3>
+                    <div id="image" class="box">
+                        <img src="${drink_data.strDrinkThumb}"/>
+                    </div>
+        
+                    <div id="recipe" class="box">
+                        <h4>Ingredients</h4>
+                        <ul>${ingredients}</ul>
+                        <br>
+                        <h4>Instructions</h4>
+                        <p>${instructions}</p>
+                    </div>
+                `
+
+                document.getElementById("result").innerHTML = html;
+            }
+        }
+
+        function spinWheel(){
+            wheel.stopAnimation(false);
+            wheel.rotationAngle = 0;
+            wheel.startAnimation();
+        }
+
+        getDrinks();
+
+    </script>
 {% endblock %}
