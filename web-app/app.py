@@ -75,6 +75,58 @@ def saved():
     return render_template("saved.html", saved=saved_drinks)
 
 
+@app.route('/search', methods=["GET"])
+def search():
+    query = request.args.get('query', '')
+    recommended = []
+
+    if query:
+        try:
+            response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/search.php?s={query}")
+            response.raise_for_status()
+            data = response.json()
+            drinks = data.get('drinks')
+
+            if drinks:
+                for drink in drinks:
+                    recommended.append({
+                        "id": drink["idDrink"],
+                        "name": drink["strDrink"],
+                        "image": drink["strDrinkThumb"]
+                    })
+            else:
+                recommended = []
+        except requests.exceptions.RequestException as e:
+            print("API Error:", e)
+            recommended = []
+
+    return render_template('search.html', recommended=recommended)
+
+
+@app.route('/browse/<letter>')
+def browse_by_letter(letter):
+    try:
+        response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/search.php?f={letter}")
+        response.raise_for_status()
+        data = response.json()
+        drinks = data.get('drinks')
+
+        recommended = []
+        if drinks:
+            for drink in drinks:
+                recommended.append({
+                    "id": drink["idDrink"],
+                    "name": drink["strDrink"],
+                    "image": drink["strDrinkThumb"]
+                })
+
+        return render_template('search.html', recommended=recommended)
+
+    except requests.exceptions.RequestException as e:
+        print("API Error:", e)
+        return render_template('search.html', recommended=[])
+
+
 @app.route("/recipe/<recipe_id>", methods=["GET", "POST"])
 def recipe(recipe_id):
     if request.method == "GET":
