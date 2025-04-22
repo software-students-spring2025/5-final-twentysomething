@@ -261,22 +261,35 @@ def save_and_redirect(recipe_id):
     user = users.find_one({"username": session["username"]})
     if user:
         try:
-            response = requests.get(
-                f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}"
-            )
-            response.raise_for_status()
-            data = response.json()
-            cocktail = data['drinks'][0]
+            if int(recipe_id) <= 17840:
+                response = requests.get(
+                    f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}"
+                )
+                response.raise_for_status()
+                data = response.json()
+                cocktail = data['drinks'][0]
 
-            users.update_one({"_id": user["_id"]}, {
-                "$addToSet": {
-                    "saved_drinks": {
-                        "id": cocktail['idDrink'],
-                        "name": cocktail['strDrink'],
-                        "image": cocktail['strDrinkThumb']
+                users.update_one({"_id": user["_id"]}, {
+                    "$addToSet": {
+                        "saved_drinks": {
+                            "id": cocktail['idDrink'],
+                            "name": cocktail['strDrink'],
+                            "image": cocktail['strDrinkThumb']
+                        }
                     }
-                }
-            })
+                })
+            else:
+                cocktail = additional_drinks.find_one({"idDrink": recipe_id})
+
+                users.update_one({"_id": user["_id"]}, {
+                    "$addToSet": {
+                        "saved_drinks": {
+                            "id": cocktail['idDrink'],
+                            "name": cocktail['strDrink'],
+                            "image": cocktail['strDrinkThumb']
+                        }
+                    }
+                })
         except requests.exceptions.RequestException as e:
             print("Error fetching cocktail data:", e)
 
