@@ -15,6 +15,7 @@ app.secret_key = os.getenv("SECRET_KEY")  # make sure this exists in .env file
 client = MongoClient(os.getenv("MONGO_URI"))
 db = client["mydb"]
 users = db["users"]
+additional_drinks = db["additional_drinks"]
 
 
 @app.route("/")
@@ -81,6 +82,14 @@ def search():
     query = request.args.get('query', '')
     recommended = []
 
+    mongo_drinks = additional_drinks.find({"strDrink": {"$regex": query, "$options": "i"}})
+    for drink in mongo_drinks:
+        recommended.append({
+            "id": drink["idDrink"],
+            "name": drink["strDrink"],
+            "image": drink.get("strDrinkThumb", "")
+        })
+
     if query:
         try:
             response = requests.get(
@@ -104,7 +113,6 @@ def search():
             recommended = []
 
     else:
-        # Default recommended drinks if no query
         recommended = [{
             "id":
             "11000",
@@ -133,8 +141,8 @@ def search():
             "Daiquiri",
             "image":
             "https://www.thecocktaildb.com/images/media/drink/mrz9091589574515.jpg"
-        }]
-
+        }] 
+    
     return render_template('search.html', recommended=recommended)
 
 
@@ -170,6 +178,27 @@ def recipe(recipe_id):
         return redirect(url_for("login"))
 
     if request.method == "GET":
+        cocktail = additional_drinks.find_one({"idDrink": recipe_id})
+        if cocktail:
+            ingredients = []
+            image = cocktail.get("strDrinkThumb", "")
+
+            for i in range(1, 16):
+                ing = cocktail.get(f"strIngredient{i}")
+                meas = cocktail.get(f"strMeasure{i}")
+                if ing:
+                    ingredients.append(f"{meas or ''} {ing}".strip())
+
+            user = users.find_one({"username": session["username"]})
+            saved = any(drink["id"] == recipe_id
+                        for drink in user.get("saved_drinks", []))
+
+            return render_template("recipe.html",
+                                   cocktail=cocktail,
+                                   ingredients=ingredients,
+                                   image=image,
+                                   saved=saved)
+
         try:
             response = requests.get(
                 f'http://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}'
@@ -177,13 +206,10 @@ def recipe(recipe_id):
             response.raise_for_status()
 
             data = response.json()
-
-            # Check if recipe exists
             drinks = data.get("drinks")
             if not drinks:
                 return "Recipe not found."
 
-            # Get ingredients
             cocktail = drinks[0]
             ingredients = []
             image = cocktail['strDrinkThumb']
@@ -203,8 +229,9 @@ def recipe(recipe_id):
                                    ingredients=ingredients,
                                    image=image,
                                    saved=saved)
+
         except requests.exceptions.RequestException as e:
-            print("Error:", e)
+            print("API Error:", e)
             return "Recipe not found."
 
     return redirect(url_for("saved"))
