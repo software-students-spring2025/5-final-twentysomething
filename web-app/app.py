@@ -82,7 +82,12 @@ def search():
     query = request.args.get('query', '')
     recommended = []
 
-    mongo_drinks = additional_drinks.find({"strDrink": {"$regex": query, "$options": "i"}})
+    mongo_drinks = additional_drinks.find(
+        {"strDrink": {
+            "$regex": query,
+            "$options": "i"
+        }})
+
     for drink in mongo_drinks:
         recommended.append({
             "id": drink["idDrink"],
@@ -106,14 +111,11 @@ def search():
                         "name": drink["strDrink"],
                         "image": drink["strDrinkThumb"]
                     })
-            else:
-                recommended = []
         except requests.exceptions.RequestException as e:
             print("API Error:", e)
-            recommended = []
 
     else:
-        recommended = [{
+        recommended += [{
             "id":
             "11000",
             "name":
@@ -141,8 +143,8 @@ def search():
             "Daiquiri",
             "image":
             "https://www.thecocktaildb.com/images/media/drink/mrz9091589574515.jpg"
-        }] 
-    
+        }]
+
     return render_template('search.html', recommended=recommended)
 
 
@@ -157,6 +159,20 @@ def browse_by_letter(letter):
         drinks = data.get('drinks')
 
         recommended = []
+
+        mongo_drinks = additional_drinks.find(
+            {"strDrink": {
+                "$regex": f"^{letter}",
+                "$options": "i"
+            }})
+
+        for drink in mongo_drinks:
+            recommended.append({
+                "id": drink["idDrink"],
+                "name": drink["strDrink"],
+                "image": drink.get("strDrinkThumb", "")
+            })
+
         if drinks:
             for drink in drinks:
                 recommended.append({
@@ -245,22 +261,35 @@ def save_and_redirect(recipe_id):
     user = users.find_one({"username": session["username"]})
     if user:
         try:
-            response = requests.get(
-                f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}"
-            )
-            response.raise_for_status()
-            data = response.json()
-            cocktail = data['drinks'][0]
+            if int(recipe_id) <= 17840:
+                response = requests.get(
+                    f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}"
+                )
+                response.raise_for_status()
+                data = response.json()
+                cocktail = data['drinks'][0]
 
-            users.update_one({"_id": user["_id"]}, {
-                "$addToSet": {
-                    "saved_drinks": {
-                        "id": cocktail['idDrink'],
-                        "name": cocktail['strDrink'],
-                        "image": cocktail['strDrinkThumb']
+                users.update_one({"_id": user["_id"]}, {
+                    "$addToSet": {
+                        "saved_drinks": {
+                            "id": cocktail['idDrink'],
+                            "name": cocktail['strDrink'],
+                            "image": cocktail['strDrinkThumb']
+                        }
                     }
-                }
-            })
+                })
+            else:
+                cocktail = additional_drinks.find_one({"idDrink": recipe_id})
+
+                users.update_one({"_id": user["_id"]}, {
+                    "$addToSet": {
+                        "saved_drinks": {
+                            "id": cocktail['idDrink'],
+                            "name": cocktail['strDrink'],
+                            "image": cocktail['strDrinkThumb']
+                        }
+                    }
+                })
         except requests.exceptions.RequestException as e:
             print("Error fetching cocktail data:", e)
 
