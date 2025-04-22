@@ -36,13 +36,14 @@ body {
 }
 
 .menu-btn {
-  font-size: 1.0rem;
+  font-size: 1rem;
   background: none;
   border: none;
   color: #F0DAB4;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
-
 
 .menu-icon {
   width: 25px;
@@ -63,7 +64,6 @@ body {
   z-index: 10;
   border-right: 2px solid #F0DAB4;
   border-bottom: 2px solid #F0DAB4;
-
 }
 
 .sidebar.open {
@@ -78,6 +78,7 @@ body {
   font-size: 1.1rem;
   font-weight: 500;
   letter-spacing: 0.15rem;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .sidebar a:hover {
@@ -91,6 +92,56 @@ body {
   transition: margin-left 0.3s ease;
 }
 
-.sidebar.open~.main-content {
+.sidebar.open ~ .main-content {
   margin-left: 250px;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 0 1rem;
+    height: 70px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .logout {
+    font-size: 1rem;
+  }
+
+  .menu-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .sidebar {
+    width: 180px;
+    top: 70px;
+    padding: 1.5rem 1rem;
+  }
+
+  .sidebar.open ~ .main-content {
+    margin-left: 0;
+
+  }
+
+  .main-content {
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .logout {
+    font-size: 0.9rem;
+  }
+
+  .sidebar a {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
 }
