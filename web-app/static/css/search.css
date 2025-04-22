@@ -8,13 +8,13 @@ html,
 body {
   height: 100%;
   font-family: 'Playfair Display', serif;
-  background-color: #faf6f0;
-  color: #160E04;
+  background-color: #160E04 !important;
+  color: #faf6f0;
 }
 
 a {
   text-decoration: none;
-  color: #160E04;
+  color: #faf6f0;
 }
 
 .search-content {
@@ -53,14 +53,24 @@ a {
   color: #333;
 }
 
-.recommended-title, .browse-title {
+.recommended-title {
   margin-top: 1.5em;
   font-size: 1.6em;
   font-weight: bold;
   text-align: center;
   letter-spacing: 0.05em;
+  margin-bottom: 1em;
+
 }
 
+.browse-title{
+  margin-top: 3em;
+  font-size: 1.6em;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.05em;
+
+}
 .recommended-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

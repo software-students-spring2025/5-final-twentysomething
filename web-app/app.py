@@ -100,6 +100,15 @@ def search():
             print("API Error:", e)
             recommended = []
 
+    else:
+        # Default recommended drinks if no query
+        recommended = [
+            {"id": "11000", "name": "Mojito", "image": "https://www.thecocktaildb.com/images/media/drink/metwgh1606770327.jpg"},
+            {"id": "11001", "name": "Old Fashioned", "image": "https://www.thecocktaildb.com/images/media/drink/vrwquq1478252802.jpg"},
+            {"id": "11002", "name": "Margarita", "image": "https://www.thecocktaildb.com/images/media/drink/wpxpvu1439905379.jpg"},
+            {"id": "11003", "name": "Daiquiri", "image": "https://www.thecocktaildb.com/images/media/drink/mrz9091589574515.jpg"}
+        ]
+
     return render_template('search.html', recommended=recommended)
 
 
