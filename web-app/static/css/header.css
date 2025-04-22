@@ -27,6 +27,11 @@ body {
   letter-spacing: 0.1rem;
 }
 
+.title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .logout {
   color: #F0DAB4;
   text-decoration: none;
