@@ -37,4 +37,4 @@ From the root directory, you can easily run the unit tests for both the database
 - [Claire Kim](https://github.com/radishsoups)
 
 ## Acknowledgements
-
+- [Free Cocktail API](https://www.thecocktaildb.com/api.php)
