@@ -1,4 +1,4 @@
-[![Web-app CI](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/web-app.yml/badge.svg?branch=main)](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/web-app.yml) [![Mongo DB CI](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/mongodb.yml/badge.svg?branch=main)](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/mongodb.yml)
+[![Github Event Logger](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/event-logger.yml/badge.svg?branch=main)](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/event-logger.yml) [![Web-app CI](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/web-app.yml/badge.svg?branch=main)](https://github.com/software-students-spring2025/5-final-twentysomething/actions/workflows/web-app.yml)
 
 # Final Project
 
