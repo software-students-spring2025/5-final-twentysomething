@@ -33,7 +33,7 @@
         <div class="line"></div>
         <img src="{{ image }}" width="200" height="200" class="drink-image">
     </div>
-    <form action="" method="POST">
+    <form method="POST" action="{{ url_for('unsave_drink', recipe_id=cocktail.idDrink) }}">
         <button type="submit" class="btn">UNSAVE</button>
     </form>
     <form method="POST" action="{{ url_for('save_and_redirect', recipe_id=cocktail.idDrink) }}">
