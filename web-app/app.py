@@ -67,10 +67,12 @@ def saved():
     if "username" not in session:
         return redirect(url_for("login"))
 
-    # hardcoded ObjectID for testing——replace with ObjectID of signed in user
-    user_id = ObjectId("68069175df061bbac7aefede")
-    user = users.find_one({"_id": user_id})
-    saved_drinks = user["saved_drinks"]
+    user = users.find_one({"username": session["username"]})
+
+    if not user or "saved_drinks" not in user:
+        saved_drinks = []
+    else:
+        saved_drinks = user["saved_drinks"]
 
     return render_template("saved.html", saved=saved_drinks)
 
@@ -182,13 +184,8 @@ def recipe(recipe_id):
             return "Recipe not found."
 
     # hardcoded ObjectID for testing——replace with ObjectID of signed in user
-    user_id = ObjectId("68069175df061bbac7aefede")
-    users.update_one({"_id": user_id},
-                     {"$pull": {
-                         "saved_drinks": {
-                             "id": recipe_id
-                         }
-                     }})
+    user = users.find_one({"username": session["username"]})
+
 
     return redirect(url_for("saved"))
 
@@ -199,10 +196,24 @@ def save_and_redirect(recipe_id):
 
     user = users.find_one({"username": session["username"]})
     if user:
-        users.update_one(
-            {"_id": user["_id"]},
-            {"$addToSet": {"saved_drinks": {"id": recipe_id}}}
-        )
+        try:
+            response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}")
+            response.raise_for_status()
+            data = response.json()
+            cocktail = data['drinks'][0]
+
+            users.update_one(
+                {"_id": user["_id"]},
+                {"$addToSet": {
+                    "saved_drinks": {
+                        "id": cocktail['idDrink'],
+                        "name": cocktail['strDrink'],
+                        "image": cocktail['strDrinkThumb']
+                    }
+                }}
+            )
+        except requests.exceptions.RequestException as e:
+            print("Error fetching cocktail data:", e)
 
     return redirect(url_for('saved'))
 
