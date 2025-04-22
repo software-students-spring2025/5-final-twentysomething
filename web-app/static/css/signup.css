@@ -18,6 +18,8 @@
     flex-direction: column;
     align-items: center;
     padding-top: 6vh;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   
   .signup-page h1 {
@@ -53,14 +55,6 @@
     text-align: center;
     width: 100%;
   }
-  
-  .form-group {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
   
   label {
     font-size: 1.1rem;
@@ -103,7 +97,6 @@
     align-self: center;
   }
   
-  
   .signup-btn:hover {
     background-color: transparent;
     color: #F2DFBA;
@@ -120,5 +113,62 @@
   .signup-text a {
     color: #F0DAB4;
     text-decoration: underline;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .signup-page h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+    }
+  
+    .signup-box {
+      padding: 2rem 1.5rem;
+    }
+  
+    .signup-box h2 {
+      font-size: 1.6rem;
+    }
+  
+    .signup-btn {
+      font-size: 1.1rem;
+      max-width: 10rem;
+    }
+  
+    label {
+      font-size: 1rem;
+    }
+  
+    input {
+      font-size: 0.95rem;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .signup-page h1 {
+      font-size: 2.4rem;
+    }
+  
+    .signup-box h2 {
+      font-size: 1.4rem;
+    }
+  
+    .signup-btn {
+      font-size: 1rem;
+      max-width: 100%;
+      padding: 0.75rem;
+    }
+  
+    label {
+      font-size: 0.95rem;
+    }
+  
+    input {
+      font-size: 0.9rem;
+      padding: 0.6rem 0.9rem;
+    }
+  
+    .signup-text {
+      font-size: 0.85rem;
+    }
   }
   
