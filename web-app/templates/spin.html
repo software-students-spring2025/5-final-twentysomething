@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/spin.css') }}" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/zarocknz/javascript-winwheel@2.7.0/Winwheel.min.js" onload="getDrinks()"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zarocknz/javascript-winwheel@2.7.0/Winwheel.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -64,13 +64,13 @@
             wheel = new Winwheel({
                 canvasId: "wheel",
                 numSegments: options.length,
-                lineWidth: 3,
+                lineWidth: 4,
                 outerRadius: 280,
                 segments: options,
                 pointerAngle: 0,
                 animation: {
                     type: "spinToStop",
-                    duration: 1, 
+                    duration: 4, 
                     spins: 10,
                     callbackFinished: outputResult
                 }
@@ -99,7 +99,9 @@
                 }
 
                 const html = `
-                    <h3 class="output-title">${drink_data.strDrink}</h3>
+                    <a href="/recipe/${drink_data.idDrink}">
+                        <h3 class="output-title">${drink_data.strDrink}</h3>
+                    </a>
                     <div id="image" class="box">
                         <img src="${drink_data.strDrinkThumb}"/>
                     </div>
