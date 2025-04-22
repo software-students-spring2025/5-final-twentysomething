@@ -75,6 +75,7 @@ def saved():
     return render_template("saved.html", saved=saved_drinks)
 
 
+
 @app.route('/search', methods=["GET"])
 def search():
     query = request.args.get('query', '')
@@ -138,6 +139,9 @@ def browse_by_letter(letter):
 
 @app.route("/recipe/<recipe_id>", methods=["GET", "POST"])
 def recipe(recipe_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    
     if request.method == "GET":
         try:
             response = requests.get(
@@ -163,10 +167,16 @@ def recipe(recipe_id):
                 if ing:
                     ingredients.append(f"{meas or ''} {ing}".strip())
 
+            user = users.find_one({"username": session["username"]})
+            saved = False
+            if user and "saved_drinks" in user:
+                saved = any(drink["id"] == recipe_id for drink in user["saved_drinks"])
+
             return render_template("recipe.html",
                                    cocktail=cocktail,
                                    ingredients=ingredients,
-                                   image=image)
+                                   image=image,
+                                   saved=saved)
         except requests.exceptions.RequestException as e:
             print("Error:", e)
             return "Recipe not found."
@@ -181,6 +191,20 @@ def recipe(recipe_id):
                      }})
 
     return redirect(url_for("saved"))
+
+@app.route('/save_and_redirect/<recipe_id>', methods=["POST"])
+def save_and_redirect(recipe_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    user = users.find_one({"username": session["username"]})
+    if user:
+        users.update_one(
+            {"_id": user["_id"]},
+            {"$addToSet": {"saved_drinks": {"id": recipe_id}}}
+        )
+
+    return redirect(url_for('saved'))
 
 
 @app.route("/spin")

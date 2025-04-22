@@ -27,7 +27,7 @@ a {
 .search-form {
   display: flex;
   align-items: center;
-  background: white;
+  background: #e9e3d7;
   border-radius: 10px;
   padding: 0.5em 1em;
   width: 90%;
@@ -81,7 +81,7 @@ a {
 }
 
 .cocktail-card {
-  background: white;
+  background: #e9e3d7;
   border-radius: 12px;
   padding: 1em;
   display: flex;
