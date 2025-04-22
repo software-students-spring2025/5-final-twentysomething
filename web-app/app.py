@@ -67,16 +67,83 @@ def saved():
     if "username" not in session:
         return redirect(url_for("login"))
 
-    # hardcoded ObjectID for testing——replace with ObjectID of signed in user
-    user_id = ObjectId("68069175df061bbac7aefede")
-    user = users.find_one({"_id": user_id})
-    saved_drinks = user["saved_drinks"]
+    user = users.find_one({"username": session["username"]})
+
+    if not user or "saved_drinks" not in user:
+        saved_drinks = []
+    else:
+        saved_drinks = user["saved_drinks"]
 
     return render_template("saved.html", saved=saved_drinks)
 
 
+
+@app.route('/search', methods=["GET"])
+def search():
+    query = request.args.get('query', '')
+    recommended = []
+
+    if query:
+        try:
+            response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/search.php?s={query}")
+            response.raise_for_status()
+            data = response.json()
+            drinks = data.get('drinks')
+
+            if drinks:
+                for drink in drinks:
+                    recommended.append({
+                        "id": drink["idDrink"],
+                        "name": drink["strDrink"],
+                        "image": drink["strDrinkThumb"]
+                    })
+            else:
+                recommended = []
+        except requests.exceptions.RequestException as e:
+            print("API Error:", e)
+            recommended = []
+
+    else:
+        # Default recommended drinks if no query
+        recommended = [
+            {"id": "11000", "name": "Mojito", "image": "https://www.thecocktaildb.com/images/media/drink/metwgh1606770327.jpg"},
+            {"id": "11001", "name": "Old Fashioned", "image": "https://www.thecocktaildb.com/images/media/drink/vrwquq1478252802.jpg"},
+            {"id": "11002", "name": "Margarita", "image": "https://www.thecocktaildb.com/images/media/drink/wpxpvu1439905379.jpg"},
+            {"id": "11003", "name": "Daiquiri", "image": "https://www.thecocktaildb.com/images/media/drink/mrz9091589574515.jpg"}
+        ]
+
+    return render_template('search.html', recommended=recommended)
+
+
+@app.route('/browse/<letter>')
+def browse_by_letter(letter):
+    try:
+        response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/search.php?f={letter}")
+        response.raise_for_status()
+        data = response.json()
+        drinks = data.get('drinks')
+
+        recommended = []
+        if drinks:
+            for drink in drinks:
+                recommended.append({
+                    "id": drink["idDrink"],
+                    "name": drink["strDrink"],
+                    "image": drink["strDrinkThumb"]
+                })
+
+        return render_template('search.html', recommended=recommended)
+
+    except requests.exceptions.RequestException as e:
+        print("API Error:", e)
+        return render_template('search.html', recommended=[])
+
+
 @app.route("/recipe/<recipe_id>", methods=["GET", "POST"])
 def recipe(recipe_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    
     if request.method == "GET":
         try:
             response = requests.get(
@@ -102,24 +169,68 @@ def recipe(recipe_id):
                 if ing:
                     ingredients.append(f"{meas or ''} {ing}".strip())
 
+            user = users.find_one({"username": session["username"]})
+            saved = any(drink["id"] == recipe_id for drink in user.get("saved_drinks", []))
+
+
             return render_template("recipe.html",
                                    cocktail=cocktail,
                                    ingredients=ingredients,
-                                   image=image)
+                                   image=image,
+                                   saved=saved)
         except requests.exceptions.RequestException as e:
             print("Error:", e)
             return "Recipe not found."
 
     # hardcoded ObjectID for testing——replace with ObjectID of signed in user
-    user_id = ObjectId("68069175df061bbac7aefede")
-    users.update_one({"_id": user_id},
-                     {"$pull": {
-                         "saved_drinks": {
-                             "id": recipe_id
-                         }
-                     }})
+    user = users.find_one({"username": session["username"]})
+
 
     return redirect(url_for("saved"))
+
+@app.route('/save_and_redirect/<recipe_id>', methods=["POST"])
+def save_and_redirect(recipe_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    user = users.find_one({"username": session["username"]})
+    if user:
+        try:
+            response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}")
+            response.raise_for_status()
+            data = response.json()
+            cocktail = data['drinks'][0]
+
+            users.update_one(
+                {"_id": user["_id"]},
+                {"$addToSet": {
+                    "saved_drinks": {
+                        "id": cocktail['idDrink'],
+                        "name": cocktail['strDrink'],
+                        "image": cocktail['strDrinkThumb']
+                    }
+                }}
+            )
+        except requests.exceptions.RequestException as e:
+            print("Error fetching cocktail data:", e)
+
+    return redirect(url_for('saved'))
+
+
+@app.route('/unsave/<recipe_id>', methods=["POST"])
+def unsave_drink(recipe_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    user = users.find_one({"username": session["username"]})
+    if user:
+        users.update_one(
+            {"_id": user["_id"]},
+            {"$pull": {"saved_drinks": {"id": recipe_id}}}
+        )
+
+    return redirect(url_for('saved'))
+
 
 
 @app.route("/spin")
