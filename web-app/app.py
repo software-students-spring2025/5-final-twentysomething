@@ -115,7 +115,7 @@ def search():
             print("API Error:", e)
 
     else:
-        recommended += [{
+        recommended = [{
             "id":
             "11000",
             "name":
