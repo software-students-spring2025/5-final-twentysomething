@@ -2,6 +2,8 @@ import pytest
 import requests
 from unittest.mock import patch
 from app import app, recommend_drink
+from werkzeug.security import generate_password_hash
+
 
 @pytest.fixture
 def client_fixture():
@@ -21,6 +23,69 @@ def session(client_fixture):
     """
     with client_fixture.session_transaction() as sess:
         sess["username"] = "testing_user"
+
+
+# tests for signup route 
+def test_signup_get_request(client_fixture):
+    response = client_fixture.get("/signup")
+    assert response.status_code == 200
+    assert b"Sign Up" in response.data
+
+
+@patch("app.users")
+def test_signup_post_new_user(mock_users, client_fixture):
+    mock_users.find_one.return_value = None # simulate no user
+    mock_users.insert_one.return_value = None
+
+    response = client_fixture.post(
+        "/signup", data={"username": "newuser", "password": "newpass"}, follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert b"Login" in response.data or b"Sign Up" in response.data 
+
+
+@patch("app.users")
+def test_signup_post_existing_user(mock_users, client_fixture):
+    mock_users.find_one.return_value = {"username": "existinguser"}
+
+    response = client_fixture.post(
+        "/signup", data={"username": "existinguser", "password": "123"}, follow_redirects=True
+    )
+
+    assert b"User already exists. Try logging in." in response.data
+
+
+# tests for login route
+def test_login_get_request(client_fixture):
+    response = client_fixture.get("/login")
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
+@patch("app.users")
+def test_login_post_valid_credentials(mock_users, client_fixture):
+    mock_users.find_one.return_value = {
+        "username": "testuser",
+        "password": generate_password_hash("testpass")
+    }
+
+    response = client_fixture.post(
+        "/login", data={"username": "testuser", "password": "testpass"}, follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert b"Dashboard" in response.data or b"COCKTAIL GENERATOR" in response.data  # depending on dashboard.html
+
+
+@patch("app.users")
+def test_login_post_invalid_credentials(mock_users, client_fixture):
+    mock_users.find_one.return_value = None  # simulate no user
+
+    response = client_fixture.post(
+        "/login", data={"username": "wrong", "password": "wrong"}, follow_redirects=True
+    )
+
+    assert b"Invalid username or password." in response.data
 
 
 # tests for spin route
