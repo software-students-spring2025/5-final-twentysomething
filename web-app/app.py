@@ -373,8 +373,9 @@ def questionnaire():
 
         if event and location and attendees:
             recommended = recommend_drink(event, location, attendees)
-            print(recommended)
-            return render_template("questionnaire.html", recommended=recommended)
+          
+            if recommended:
+                return render_template("questionnaire.html", recommended=recommended)
         else:
             return render_template("questionnaire.html", error="Please fill out all 3 questions to receive a recommendation.")
 
