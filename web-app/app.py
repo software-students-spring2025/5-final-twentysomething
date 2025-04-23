@@ -316,7 +316,11 @@ def unsave_drink(recipe_id):
 
 @app.route("/spin")
 def spin():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    
     return render_template("spin.html")
+
 
 
 def recommend_drink(event, location, attendees):
@@ -386,6 +390,9 @@ def recommend_drink(event, location, attendees):
 
 @app.route("/questionnaire", methods=["GET", "POST"])
 def questionnaire():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    
     if request.method == "POST":
         event = request.form.get("event")
         location = request.form.get("location")
@@ -393,9 +400,9 @@ def questionnaire():
 
         if event and location and attendees:
             recommended = recommend_drink(event, location, attendees)
-            print(recommended)
-            return render_template("questionnaire.html",
-                                   recommended=recommended)
+          
+            if recommended:
+                return render_template("questionnaire.html", recommended=recommended)
         else:
             return render_template(
                 "questionnaire.html",
