@@ -143,7 +143,6 @@ input{
 }
 
 .box-wrapper{
-    border: solid 1px white;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
