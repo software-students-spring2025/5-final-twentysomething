@@ -10,6 +10,9 @@ pymongo = "*"
 dotenv = "*"
 requests = "*"
 bson = "*"
+pytest = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [dev-packages]
 
