@@ -31,7 +31,8 @@ def signup():
         password = request.form["password"]
 
         if users.find_one({"username": username}):
-            return "User already exists. Try logging in."
+            error = "User already exists. Try logging in."
+            return render_template("signup.html", error=error)
 
         hashed_pw = generate_password_hash(password)
         users.insert_one({"username": username, "password": hashed_pw})
