@@ -188,7 +188,7 @@ li{
 
 /* responsive */
 @media (max-width: 600px){
-    .questions, .result{
+    .questions, .result, .box-wrapper{
         flex-direction: column;
     }
 }
