@@ -125,23 +125,66 @@ input{
 }
 
 .result{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     gap: 70px;
     padding: 80px;
     padding-top: 100px;
 }
 
+.output-title{
+    font-size: 18pt;
+    width: 100%;
+    margin-top: 0;
+    padding-top: 0;
+    transition: transform 0.2s;
+}
+
+.output-title:hover{
+    transform: scale(1.15);
+}
+
+.box-wrapper{
+    border: solid 1px white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+}
+
 .box{
+    padding: 30px;
     background-color: #1F130A;
     border: solid 1px #F0DAB4;
     border-radius: 10px;
     flex: 1;
-    padding: 20px;
-    width: 350px;
-    height: 250px;
+    width: 500px;
+    height: 360px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+}
+
+img{
+    width: 300px;
+    height: auto;
+}
+
+h4{
+    font-size: 14pt;
+    font-weight: bolder;
+    padding-bottom: 7px;
+}
+
+#image{
     text-align: center;
+}
+
+li{
+    margin-left: 15px;
+}
+
+#recipe{
+    align-items: left;
 }
 
 /* responsive */

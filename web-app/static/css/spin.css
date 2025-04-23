@@ -54,6 +54,11 @@ h2{
     letter-spacing: 0.15em;
 }
 
+.link{
+    text-decoration: none;
+    cursor: pointer;
+}
+
 h3{
     padding: 15px;
     width: 40%;
@@ -127,6 +132,11 @@ h3{
     width: 100%;
     margin-top: 0;
     padding-top: 0;
+    transition: transform 0.2s;
+}
+
+.output-title:hover{
+    transform: scale(1.15);
 }
 
 .box{
@@ -148,6 +158,7 @@ img{
 h4{
     font-size: 14pt;
     font-weight: bolder;
+    padding-bottom: 7px;
 }
 
 li{
