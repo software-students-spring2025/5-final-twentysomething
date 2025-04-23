@@ -21,20 +21,22 @@
 
         <div class="signup-box">
             <h2>Sign Up</h2>
+
             <form id="signup-form" method="POST" action="/signup">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required />
 
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required />
-            </form>
 
-            {% if error %}
-                <p class="error-message">{{ error }}</p>
-            {% endif %}
-            
-            <button type="submit" class="signup-btn" onclick="document.getElementById('signup-form').submit();">SIGN
-                UP</button>
+                {% if error %}
+                    <p class="error-message">{{ error }}</p>
+                {% endif %}
+
+                <div style="text-align: center;">
+                    <button type="submit" class="signup-btn">SIGN UP</button>
+                </div>
+            </form>
 
             <p class="signup-text">
                 Already have an account? <a href="/login">Login</a>
