@@ -12,6 +12,7 @@ requests = "*"
 bson = "*"
 pytest = "*"
 coverage = "*"
+pytest-cov = "*"
 
 [dev-packages]
 

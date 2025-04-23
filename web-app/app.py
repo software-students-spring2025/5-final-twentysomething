@@ -366,7 +366,7 @@ def recommend_drink(event, location, attendees):
 
     except requests.exceptions.RequestException as e:
             print("Error fetching recommended drink data:", e)
-
+            return None
 
 @app.route("/questionnaire", methods=["GET", "POST"])
 def questionnaire():
