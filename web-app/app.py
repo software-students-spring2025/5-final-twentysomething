@@ -321,6 +321,7 @@ def spin():
     
     return render_template("spin.html")
 
+
 def recommend_drink(event, location, attendees):
     category = ""
    
