@@ -47,7 +47,8 @@ body {
   background-color: white;
   padding: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 120px;
+  width: 200px;
+  height: 260px;
   border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
@@ -64,8 +65,8 @@ body {
 }
 
 .photo {
-  width: 100px;
-  height: 100px;
+  width: 180px;
+  height: 2000px;
   background-color: #ccc;
   object-fit: cover;
   margin-bottom: 8px;
