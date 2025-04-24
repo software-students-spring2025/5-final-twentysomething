@@ -2,9 +2,12 @@ import os
 import requests
 import random
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask import jsonify
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+import base64
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -401,6 +404,47 @@ def take_picture():
     if "username" not in session:
         return redirect(url_for("login"))
     return render_template("takepicture.html")
+
+@app.route("/journal")
+def journal():
+    journal_entries = session.get("journal_entries", [])
+    return render_template("journal.html", journal_entries=journal_entries)
+
+
+@app.route("/upload_image", methods=["POST"])
+def upload_image():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    data = request.get_json()
+    image_data = data.get("image")
+    caption = data.get("caption", "")
+    date_str = datetime.now().strftime("%m/%d/%Y")
+
+    if image_data and image_data.startswith("data:image/png;base64,"):
+        image_data = image_data.replace("data:image/png;base64,", "")
+        image_bytes = base64.b64decode(image_data)
+
+        filename = f"journal_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+        filepath = os.path.join("static/uploads", filename)
+
+
+        os.makedirs("static/uploads", exist_ok=True)
+
+        with open(filepath, "wb") as f:
+            f.write(image_bytes)
+
+        # Store journal entry (example using session, ideally store in DB)
+        if "journal_entries" not in session:
+            session["journal_entries"] = []
+        session["journal_entries"].append({
+            "image_url": f"/static/uploads/{filename}",
+            "date": date_str,
+            "caption": caption
+        })
+
+    return jsonify({"status": "success"})
+
 
 
 

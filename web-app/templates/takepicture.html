@@ -13,7 +13,7 @@
 
 {% block content %}
 <section class="gallery-section">
-    <h1 class="gallery-title">Gallery of Your Memory</h1>
+    <h1 class="gallery-title">PhotoBooth</h1>
     <p class="gallery-subtitle">Take a selfie with your friends and cocktail!</p>
 
     <div class="camera-box" id="camera-box">
@@ -76,18 +76,27 @@
     }
 
     function uploadPicture() {
-        const caption = document.getElementById("caption-input").value;
-        const image = window.capturedImage;
+    const caption = document.getElementById("caption-input").value;
+    const image = window.capturedImage;
 
-        // Send to backend (not implemented yet)
-        fetch("/upload_image", {
-            method: "POST",
-            body: JSON.stringify({ image: image, caption: caption }),
-            headers: { "Content-Type": "application/json" },
-        }).then(() => {
-            alert("Uploaded!");
-            location.reload();
-        });
-    }
+    fetch("/upload_image", {
+        method: "POST",
+        body: JSON.stringify({ image: image, caption: caption }),
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            window.location.href = "/journal";
+        } else {
+            alert("Failed to upload. Please try again.");
+        }
+    })
+    .catch(err => {
+        console.error("Upload error:", err);
+        alert("Something went wrong while uploading.");
+    });
+}
+
 </script>
 {% endblock %}

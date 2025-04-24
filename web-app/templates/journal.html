@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery | Cocktail Generator{% endblock %}
+
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
+    rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/journal.css') }}" />
+{% endblock %}
+
+{% block content %}
+<section class="journal-section">
+    <h1 class="gallery-title">Gallery of Your Memory</h1>
+    <p class="gallery-subtitle">Take a selfie with your friends and cocktail<br>for your gallery!</p>
+
+    <div class="journal-grid">
+        {% for entry in journal_entries %}
+        <div class="polaroid">
+            <img class="clip" src="{{ url_for('static', filename='img/woodclip' ~ loop.index % 1 + 3 ~ '.svg') }}" alt="clip" />
+            <img class="photo" src="{{ entry.image_url }}" alt="memory photo" />
+            <p class="date">{{ entry.date }}</p>
+            {% if entry.caption %}
+            <p class="caption">{{ entry.caption }}</p>
+            {% endif %}
+        </div>        
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
