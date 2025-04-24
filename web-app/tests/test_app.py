@@ -1,6 +1,6 @@
 import pytest
 import requests
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from app import app, recommend_drink
 from werkzeug.security import generate_password_hash
 
@@ -86,6 +86,63 @@ def test_login_post_invalid_credentials(mock_users, client_fixture):
     )
 
     assert b"Invalid username or password." in response.data
+
+
+# tests for dashboard (ai)
+
+@patch("app.openai.OpenAI")
+def test_chat_post_success(mock_openai_class, client_fixture):
+    session(client_fixture)
+
+    mock_client = MagicMock()
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock(message=MagicMock(content="Negroni\nA sophisticated and bitter cocktail."))]
+    mock_client.chat.completions.create.return_value = mock_response
+    mock_openai_class.return_value = mock_client
+
+    response = client_fixture.post("/chat", data={"user_input": "I'm going on a date"}, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"I recommend..." in response.data
+    assert b"Negroni" in response.data
+    assert b"A sophisticated and bitter cocktail." in response.data
+
+
+@patch("app.openai.OpenAI")
+def test_chat_post_invalid_drink(mock_openai_class, client_fixture):
+    session(client_fixture)
+
+    mock_client = MagicMock()
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock(message=MagicMock(content="FictionalDrink\nAn imaginary cocktail."))]
+    mock_client.chat.completions.create.return_value = mock_response
+    mock_openai_class.return_value = mock_client
+
+    response = client_fixture.post("/chat", data={"user_input": "Make up a drink"}, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"FictionalDrink" in response.data
+    assert b"we don't have a recipe for this drink" in response.data
+
+
+def test_chat_post_no_input(client_fixture):
+    session(client_fixture)
+    response = client_fixture.post("/chat", data={"user_input": ""}, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Something went wrong" in response.data or b"ai-response" in response.data
+
+
+@patch("app.openai.OpenAI")
+def test_chat_post_exception(mock_openai_class, client_fixture):
+    session(client_fixture)
+
+    mock_openai_class.side_effect = Exception("AI service failed")
+
+    response = client_fixture.post("/chat", data={"user_input": "Recommend something"}, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Error: AI service failed" in response.data or b"Something went wrong" in response.data
 
 
 # tests for spin route
