@@ -1,8 +1,7 @@
 import os
 import requests
 import random
-from flask import Flask, render_template, request, redirect, url_for, session
-from flask import jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -426,25 +425,27 @@ def upload_image():
         image_bytes = base64.b64decode(image_data)
 
         filename = f"journal_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
-        filepath = os.path.join("static/uploads", filename)
-
-
+        save_path = os.path.join("static", "uploads")
         os.makedirs("static/uploads", exist_ok=True)
+        file_path = os.path.join(save_path, filename)
 
-        with open(filepath, "wb") as f:
+        with open(file_path, "wb") as f:
             f.write(image_bytes)
 
         # Store journal entry (example using session, ideally store in DB)
-        if "journal_entries" not in session:
-            session["journal_entries"] = []
-        session["journal_entries"].append({
+        new_entry = {
             "image_url": f"/static/uploads/{filename}",
             "date": date_str,
             "caption": caption
-        })
+        }
 
-    return jsonify({"status": "success"})
+        journal_entries = session.get("journal_entries", [])
+        journal_entries.append(new_entry)
+        session["journal_entries"] = journal_entries
 
+        return jsonify({"status": "success"})
+
+    return jsonify({"status": "error"})
 
 
 
