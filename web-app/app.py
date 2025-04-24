@@ -1,6 +1,7 @@
 import os
 import requests
 import random
+import openai
 from flask import Flask, render_template, request, redirect, url_for, session
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -8,9 +9,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Load environment variables
+# load environment variables
 load_dotenv()
 app.secret_key = os.getenv("SECRET_KEY")  # make sure this exists in .env file
+
+# connect to OpenRouter
+openai.api_base = "https://openrouter.ai/api/v1"
+openai.api_key = os.getenv("OPENROUTER_API_KEY")  # make sure this exists in .env file
+openai_request_headers = {
+    "Authorization": f"Bearer {openai.api_key}",
+    "HTTP-Referer": "http://localhost:5001",  # replace with deployed URL if needed
+    "X-Title": "CocktailChatApp"
+}
+OPENROUTER_SYSTEM_PROMPT = (
+    "You are a cocktail recommendation assistant. Given a mood or event, return the name of an existing cocktail "
+    "on the first line, followed by a one-sentence explanation on the next line. Be concise, and do not invent new drinks. "
+    "Format it exactly like this:\n<drink name>\n<one-sentence explanation>"
+)
 
 # connect to MongoDB
 client = MongoClient(os.getenv("MONGO_URI"))
@@ -63,6 +78,66 @@ def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
     return render_template("dashboard.html", username=session["username"])
+
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    user_input = request.form.get("user_input", "")
+    response_text = "Something went wrong. Try again."
+
+    if user_input:
+        try:
+            client = openai.OpenAI(
+                api_key=os.getenv("OPENROUTER_API_KEY"),
+                base_url="https://openrouter.ai/api/v1"
+            )
+
+            completion = client.chat.completions.create(
+                model="openai/gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": OPENROUTER_SYSTEM_PROMPT},
+                    {"role": "user", "content": user_input}
+                ],
+                extra_headers={
+                    "HTTP-Referer": "http://localhost:5001",
+                    "X-Title": "CocktailChatApp"
+                }
+            )
+
+            ai_response = completion.choices[0].message.content.strip()
+            lines = ai_response.split("\n", 1)
+
+            drink_name = lines[0].strip()
+            explanation = lines[1].strip() if len(lines) > 1 else ""
+
+            cocktail = additional_drinks.find_one({
+                "strDrink": {"$regex": f"^{drink_name}$", "$options": "i"}
+            })
+
+            if not cocktail:
+                api_resp = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/search.php?s={drink_name}")
+                api_resp.raise_for_status()
+                data = api_resp.json()
+                cocktail = data.get("drinks", [])[0] if data.get("drinks") else None
+
+            if cocktail:
+                response_text = (
+                    f"<strong>I recommend...</strong><br><br><strong>{drink_name}</strong> - {explanation}<br><br>"
+                    "Click the <strong>Search Recipes</strong> button to see full ingredients and instructions."
+                )
+            else:
+                response_text = (
+                    f"<strong>I recommend...</strong><br><br><strong>{drink_name}</strong> - {explanation}<br><br>"
+                    "Unfortunately, we don't have a recipe for this drink at the moment."
+                )
+
+        except Exception as e:
+            response_text = f"<span style='color:red;'>Error: {str(e)}</span>"
+
+    return f'<div class="ai-response">{response_text}</div>'
 
 
 @app.route("/saved")

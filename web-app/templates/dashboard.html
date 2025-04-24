@@ -27,4 +27,45 @@
     </div>
   </div>
 </section>
+
+<!-- ai integration -->
+<button class="ai-toggle" onclick="toggleAi()">Ask AI Bartender</button>
+
+<div class="ai-popup" id="aiPopup">
+  <form id="ai-form" method="POST" action="/chat" onsubmit="sendAi(event)">
+    <textarea name="user_input" placeholder="Describe the event or your mood..." required></textarea>
+    <button type="submit">Give me recommendation!</button>
+  </form>
+  <div id="ai-response" class="ai-response"></div>
+</div>
+
+<script>
+function toggleAi() {
+  const popup = document.getElementById("aiPopup");
+  popup.style.display = popup.style.display === "block" ? "none" : "block";
+}
+
+async function sendAi(event) {
+  event.preventDefault();
+  const textarea = document.querySelector("#ai-form textarea");
+  const responseBox = document.getElementById("ai-response");
+  const user_input = textarea.value;
+
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `user_input=${encodeURIComponent(user_input)}`
+  });
+
+  const html = await res.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const response = doc.querySelector(".ai-response");
+
+  if (response) {
+    responseBox.innerHTML = response.innerHTML;
+    textarea.value = "";
+  }
+}
+</script>
 {% endblock %}
