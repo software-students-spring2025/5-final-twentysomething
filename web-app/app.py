@@ -2,11 +2,11 @@ import os
 import requests
 import random
 import openai
+import base64
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
-import base64
 from datetime import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
