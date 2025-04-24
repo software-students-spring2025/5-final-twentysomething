@@ -24,8 +24,8 @@
         {% for cocktail in recommended %}
         <div class="cocktail-card">
             <a href="/recipe/{{ cocktail.id }}">
-                <img src="{{ cocktail.image }}" alt="{{ cocktail.name }}" class="cocktail-image" />
-                <p class="cocktail-name">{{ cocktail.name }}</p>
+                <img src="{{ cocktail.strDrinkThumb }}" alt="{{ cocktail.strDrink }}" class="cocktail-image" />
+                <p class="cocktail-name">{{ cocktail.strDrink }}</p>
             </a>
         </div>
         {% endfor %}
@@ -34,8 +34,8 @@
     <h2 class="browse-title">Browse by Alphabet</h2>
     <div class="alphabet-links">
         {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-            <a href="{{ url_for('browse_by_letter', letter=letter) }}">{{ letter }}</a>
-            {% if not loop.last %} / {% endif %}
+        <a href="{{ url_for('browse_by_letter', letter=letter) }}">{{ letter }}</a>
+        {% if not loop.last %} / {% endif %}
         {% endfor %}
     </div>
 </section>
