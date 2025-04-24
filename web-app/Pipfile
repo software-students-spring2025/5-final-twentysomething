@@ -12,6 +12,8 @@ requests = "*"
 bson = "*"
 pytest = "*"
 coverage = "*"
+pytest-cov = "*"
+openai = "*"
 
 [dev-packages]
 

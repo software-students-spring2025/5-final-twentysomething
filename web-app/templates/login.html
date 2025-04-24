@@ -17,20 +17,28 @@
 
             <div class="login-box">
                 <h2>Login</h2>
+                
                 <form id="login-form" method="POST" action="/login">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required />
 
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required />
-                </form>
 
-                <button type="submit" class="login-btn" onclick="document.getElementById('login-form').submit();">LOGIN</button>
+                    {% if error %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endif %}
+
+                    <div style="text-align: center;">
+                        <button type="submit" class="login-btn">LOGIN</button>
+                    </div>                
+                </form>
 
                 <p class="signup-text">
                     Don’t have an account? <a href="/signup">Sign Up</a>
                 </p>
             </div>
+
         </section>
     </body>
 </html>

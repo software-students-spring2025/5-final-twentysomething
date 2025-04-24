@@ -79,6 +79,14 @@
     outline: none;
     border-color: #F2DFBA;
   }
+
+  .error-message {
+    color: red;
+    margin-bottom: 1.2rem;
+    font-size: 0.9rem;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
   
   .signup-btn {
     font-family: 'Playfair Display', serif;

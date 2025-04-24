@@ -1,54 +1,54 @@
 body {
     background-color: #160E04 !important;
-  }
-  
-  .dashboard-container {
+}
+
+.dashboard-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 4rem 2rem;
+    padding: 2rem 2rem;
     color: #F0DAB4;
-  }
-  
-  .welcome-msg h1,
-  .welcome-msg h2 {
+}
+
+.welcome-msg h1,
+.welcome-msg h2 {
     font-family: 'Playfair Display SC', serif;
     text-align: center;
     letter-spacing: 0.08em;
-  }
-  
-  .welcome-msg h1 {
+}
+
+.welcome-msg h1 {
     font-size: 2.8rem;
     margin-bottom: 1rem;
-  }
-  
-  .welcome-msg h2 {
+}
+
+.welcome-msg h2 {
     font-size: 1.8rem;
     margin-bottom: 2.5rem;
-  }
-  
-  .dashboard-layout {
+}
+
+.dashboard-layout {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 6rem;
     margin-top: 2rem;
     flex-wrap: wrap;
-  }
-  
-  .profile img {
+}
+
+.profile img {
     width: 500px;
     height: auto;
     border-radius: 50%;
-  }
-  
-  .dashboard-buttons {
+}
+
+.dashboard-buttons {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  .dash-btn {
+}
+
+.dash-btn {
     background-color: #F2DFBA;
     color: #150C04;
     font-family: 'Playfair Display', serif;
@@ -63,86 +63,203 @@ body {
     text-decoration: none;
     width: 280px;
     display: inline-block;
-  }
-  
-  .dash-btn:hover {
+}
+
+.dash-btn:hover {
     background-color: #d9c7a3;
     transform: scale(1.05);
-  }
-  
-  .subtext {
+}
+
+.ai-toggle {
+    font-family: 'Playfair Display SC', serif;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background-color: #F2DFBA;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 1rem;
+    z-index: 10;
+    width: 230px;
+    height: 50px;
+}
+
+.ai-popup {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.88);
+    border: 2px solid #F0DAB4;
+    padding: 20px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 340px;
+    z-index: 1000;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+}
+
+.ai-popup textarea {
+    width: 100%;
+    height: 80px;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    resize: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    background-color: #fdf5e6;
+    color: #000;
+}
+
+.ai-popup button {
+    font-family: 'Playfair Display', serif;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #F0DAB4;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.ai-response {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.subtext {
     font-size: 1rem;
     font-style: italic;
     margin: 0.8rem 0;
     text-align: center;
-  }
-  
-  @media screen and (max-width: 1024px) {
+}
+
+
+@media screen and (max-width: 1024px) {
     .profile img {
-      width: 400px;
+        width: 400px;
     }
-  
+
     .welcome-msg h1 {
-      font-size: 2.2rem;
+        font-size: 2.2rem;
     }
-  
+
     .welcome-msg h2 {
-      font-size: 1.5rem;
+        font-size: 1.5rem;
     }
-  
+
     .dash-btn {
-      font-size: 1.1rem;
-      width: 240px;
-      padding: 0.9rem 2rem;
+        font-size: 1.1rem;
+        width: 240px;
+        padding: 0.9rem 2rem;
     }
-  }
-  
-  @media screen and (max-width: 768px) {
+}
+
+@media screen and (max-width: 768px) {
     .dashboard-layout {
-      flex-direction: column;
-      gap: 2.5rem;
+        flex-direction: column;
+        gap: 2.5rem;
     }
-  
+
     .profile img {
-      width: 300px;
+        width: 300px;
     }
-  
+
     .dash-btn {
-      font-size: 1rem;
-      width: 220px;
-      padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        width: 220px;
+        padding: 0.8rem 1.5rem;
     }
-  
+
     .welcome-msg h1 {
-      font-size: 1.8rem;
+        font-size: 1.8rem;
     }
-  
+
     .welcome-msg h2 {
-      font-size: 1.3rem;
+        font-size: 1.3rem;
     }
-  }
-  
-  @media screen and (max-width: 480px) {
+
+    .ai-popup {
+        right: 10px;
+        left: 10px;
+        bottom: 100px;
+        width: auto;
+    }
+
+    .ai-popup textarea {
+        height: 70px;
+        font-size: 0.9rem;
+    }
+
+    .ai-popup button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .ai-response {
+        font-size: 0.9rem;
+    }
+
+    .ai-toggle {
+        width: auto;
+        height: auto;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
     .profile img {
-      width: 240px;
+        width: 240px;
     }
-  
+
     .dash-btn {
-      font-size: 0.95rem;
-      width: 200px;
-      padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        width: 200px;
+        padding: 0.75rem 1rem;
     }
-  
+
     .welcome-msg h1 {
-      font-size: 1.5rem;
+        font-size: 1.5rem;
     }
-  
+
     .welcome-msg h2 {
-      font-size: 1.1rem;
+        font-size: 1.1rem;
     }
-  
+
     .dashboard-container {
-      padding: 3rem 1rem;
+        padding: 3rem 1rem;
     }
-  }
-  
+
+    .ai-popup {
+        padding: 15px;
+        max-width: 100%;
+        font-size: 0.85rem;
+        bottom: 90px;
+    }
+
+    .ai-popup textarea {
+        height: 65px;
+    }
+
+    .ai-popup button {
+        padding: 8px;
+    }
+
+    .ai-toggle {
+        font-size: 0.85rem;
+        padding: 8px 14px;
+    }
+}

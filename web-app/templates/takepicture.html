@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery | Cocktail Generator{% endblock %}
+
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
+    rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/takepicture.css') }}" />
+{% endblock %}
+
+{% block content %}
+<section class="gallery-section">
+    <h1 class="gallery-title">PhotoBooth</h1>
+    <p class="gallery-subtitle">Take a selfie with your friends and cocktail!</p>
+
+    <div class="camera-box" id="camera-box">
+        <video id="camera-stream" autoplay muted playsinline></video>
+    </div>
+
+    <input type="text" id="caption-input" placeholder="Caption this event!" class="caption-input" style="display: none;" />
+
+    <div class="button-group">
+        <button class="btn" id="retake-btn" onclick="retakePicture()" style="display: none;">Retake Picture</button>
+        <button class="btn" id="upload-btn" onclick="uploadPicture()" style="display: none;">Upload to Gallery</button>
+        <button class="btn" id="take-btn" onclick="takePicture()">Take Picture</button>
+    </div>
+</section>
+
+<script>
+    let stream;
+    const video = document.getElementById("camera-stream");
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(s => {
+            stream = s;
+            video.srcObject = stream;
+        })
+        .catch(err => {
+            console.error("Camera error:", err);
+        });
+
+    function takePicture() {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataURL = canvas.toDataURL("image/png");
+
+        // Replace video with image
+        const img = new Image();
+        img.src = dataURL;
+        img.style.width = "100%";
+        img.style.borderRadius = "10px";
+
+        const cameraBox = document.getElementById("camera-box");
+        cameraBox.innerHTML = ""; // Clear video
+        cameraBox.appendChild(img);
+
+        // Show input + new buttons, hide take button
+        document.getElementById("caption-input").style.display = "block";
+        document.getElementById("retake-btn").style.display = "inline-block";
+        document.getElementById("upload-btn").style.display = "inline-block";
+        document.getElementById("take-btn").style.display = "none";
+
+        // Store image data if you want to use it later
+        window.capturedImage = dataURL;
+    }
+
+    function retakePicture() {
+        location.reload();
+    }
+
+    function uploadPicture() {
+    const caption = document.getElementById("caption-input").value;
+    const image = window.capturedImage;
+
+    fetch("/upload_image", {
+        method: "POST",
+        body: JSON.stringify({ image: image, caption: caption }),
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            window.location.href = "/journal";
+        } else {
+            alert("Failed to upload. Please try again.");
+        }
+    })
+    .catch(err => {
+        console.error("Upload error:", err);
+        alert("Something went wrong while uploading.");
+    });
+}
+
+</script>
+{% endblock %}

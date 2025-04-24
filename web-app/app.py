@@ -1,16 +1,33 @@
 import os
 import requests
 import random
-from flask import Flask, render_template, request, redirect, url_for, session
+import openai
+import base64
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Load environment variables
+# load environment variables
 load_dotenv()
 app.secret_key = os.getenv("SECRET_KEY")  # make sure this exists in .env file
+
+# connect to OpenRouter
+openai.api_base = "https://openrouter.ai/api/v1"
+openai.api_key = os.getenv("OPENROUTER_API_KEY")  # make sure this exists in .env file
+openai_request_headers = {
+    "Authorization": f"Bearer {openai.api_key}",
+    "HTTP-Referer": "http://localhost:5001",  # replace with deployed URL if needed
+    "X-Title": "CocktailChatApp"
+}
+OPENROUTER_SYSTEM_PROMPT = (
+    "You are a cocktail recommendation assistant. Given a mood or event, return the name of an existing cocktail "
+    "on the first line, followed by a one-sentence explanation on the next line. Be concise, and do not invent new drinks. "
+    "Format it exactly like this:\n<drink name>\n<one-sentence explanation>"
+)
 
 # connect to MongoDB
 client = MongoClient(os.getenv("MONGO_URI"))
@@ -31,7 +48,8 @@ def signup():
         password = request.form["password"]
 
         if users.find_one({"username": username}):
-            return "User already exists. Try logging in."
+            error = "User already exists. Try logging in."
+            return render_template("signup.html", error=error)
 
         hashed_pw = generate_password_hash(password)
         users.insert_one({"username": username, "password": hashed_pw})
@@ -51,7 +69,8 @@ def login():
             session["username"] = username
             return redirect(url_for("dashboard"))
         else:
-            return "Invalid username or password."
+            error = "Invalid username or password."
+            return render_template("login.html", error=error)
 
     return render_template("login.html")
 
@@ -61,6 +80,66 @@ def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
     return render_template("dashboard.html", username=session["username"])
+
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    user_input = request.form.get("user_input", "")
+    response_text = "Something went wrong. Try again."
+
+    if user_input:
+        try:
+            client = openai.OpenAI(
+                api_key=os.getenv("OPENROUTER_API_KEY"),
+                base_url="https://openrouter.ai/api/v1"
+            )
+
+            completion = client.chat.completions.create(
+                model="openai/gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": OPENROUTER_SYSTEM_PROMPT},
+                    {"role": "user", "content": user_input}
+                ],
+                extra_headers={
+                    "HTTP-Referer": "http://localhost:5001",
+                    "X-Title": "CocktailChatApp"
+                }
+            )
+
+            ai_response = completion.choices[0].message.content.strip()
+            lines = ai_response.split("\n", 1)
+
+            drink_name = lines[0].strip()
+            explanation = lines[1].strip() if len(lines) > 1 else ""
+
+            cocktail = additional_drinks.find_one({
+                "strDrink": {"$regex": f"^{drink_name}$", "$options": "i"}
+            })
+
+            if not cocktail:
+                api_resp = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/search.php?s={drink_name}")
+                api_resp.raise_for_status()
+                data = api_resp.json()
+                cocktail = data.get("drinks", [])[0] if data.get("drinks") else None
+
+            if cocktail:
+                response_text = (
+                    f"<strong>I recommend...</strong><br><br><strong>{drink_name}</strong> - {explanation}<br><br>"
+                    "Click the <strong>Search Recipes</strong> button to see full ingredients and instructions."
+                )
+            else:
+                response_text = (
+                    f"<strong>I recommend...</strong><br><br><strong>{drink_name}</strong> - {explanation}<br><br>"
+                    "Unfortunately, we don't have a recipe for this drink at the moment."
+                )
+
+        except Exception as e:
+            response_text = f"<span style='color:red;'>Error: {str(e)}</span>"
+
+    return f'<div class="ai-response">{response_text}</div>'
 
 
 @app.route("/saved")
@@ -385,8 +464,8 @@ def recommend_drink(event, location, attendees):
             return drink
 
     except requests.exceptions.RequestException as e:
-        print("Error fetching recommended drink data:", e)
-
+            print("Error fetching recommended drink data:", e)
+            return None
 
 @app.route("/questionnaire", methods=["GET", "POST"])
 def questionnaire():
@@ -416,6 +495,56 @@ def questionnaire():
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
+@app.route("/takepicture")
+def take_picture():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    return render_template("takepicture.html")
+
+@app.route("/journal")
+def journal():
+    journal_entries = session.get("journal_entries", [])
+    return render_template("journal.html", journal_entries=journal_entries)
+
+
+@app.route("/upload_image", methods=["POST"])
+def upload_image():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    data = request.get_json()
+    image_data = data.get("image")
+    caption = data.get("caption", "")
+    date_str = datetime.now().strftime("%m/%d/%Y")
+
+    if image_data and image_data.startswith("data:image/png;base64,"):
+        image_data = image_data.replace("data:image/png;base64,", "")
+        image_bytes = base64.b64decode(image_data)
+
+        filename = f"journal_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+        save_path = os.path.join("static", "uploads")
+        os.makedirs("static/uploads", exist_ok=True)
+        file_path = os.path.join(save_path, filename)
+
+        with open(file_path, "wb") as f:
+            f.write(image_bytes)
+
+        # Store journal entry (example using session, ideally store in DB)
+        new_entry = {
+            "image_url": f"/static/uploads/{filename}",
+            "date": date_str,
+            "caption": caption
+        }
+
+        journal_entries = session.get("journal_entries", [])
+        journal_entries.append(new_entry)
+        session["journal_entries"] = journal_entries
+
+        return jsonify({"status": "success"})
+
+    return jsonify({"status": "error"})
+
 
 
 if __name__ == "__main__":
