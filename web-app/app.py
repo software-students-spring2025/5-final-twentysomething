@@ -401,34 +401,52 @@ def spin():
     return render_template("spin.html")
 
 
+
 def recommend_drink(event, location, attendees):
     category = ""
-   
-    if event == "business" and location == "corporation" and (attendees == "large-group" or attendees == "unknown"): 
+
+    if event == "business" and location == "corporation" and (
+            attendees == "large-group" or attendees == "unknown"):
         category = "Cocktail"
-    elif event == "business" and (location == "house" or location == "outdoors") and attendees:
+    elif event == "business" and (location == "house"
+                                  or location == "outdoors") and attendees:
         category = "Soft_Drink"
     elif event == "business" and location == "restaurant-venue" and attendees:
         category = "Beer"
-    elif event == "pregame" and (location == "corporation" or location == "outdoors" or location == "restaurant-venue") and (attendees == "close-friends-families" or attendees == "large-group"): 
+    elif event == "pregame" and (
+            location == "corporation" or location == "outdoors" or location
+            == "restaurant-venue") and (attendees == "close-friends-families"
+                                        or attendees == "large-group"):
         category = "Beer"
     elif event == "pregame" and location == "house" and attendees == "close-friends-families":
         category = "Shot"
-    elif event == "chill" and (location == "corporation" or location == "house" or location == "outdoors" or location == "restaurant-venue") and attendees:
+    elif event == "chill" and (location == "corporation" or location == "house"
+                               or location == "outdoors" or location
+                               == "restaurant-venue") and attendees:
         category = "Soft_Drink"
-    elif event == "dinner" and (location == "corporation" or location == "outdoors" or location == "restaurant-venue") and attendees:
+    elif event == "dinner" and (location == "corporation"
+                                or location == "outdoors" or location
+                                == "restaurant-venue") and attendees:
         category = "Cocktail"
-    elif event == "dinner" and location == "house" and (attendees == "close-friends-families" or attendees == "unknown"):
+    elif event == "dinner" and location == "house" and (
+            attendees == "close-friends-families" or attendees == "unknown"):
         category = "Ordinary_Drink"
-    elif event == "party" and (location == "corporation" or location == "restaurant-venue") and (attendees == "large-group" or attendees == "unknown"):
+    elif event == "party" and (location == "corporation"
+                               or location == "restaurant-venue") and (
+                                   attendees == "large-group"
+                                   or attendees == "unknown"):
         category = "Cocktail"
-    elif event == "party" and (location == "house" or location == "outdoors") and (attendees == "close-friends-families" or attendees == "large-group"):
+    elif event == "party" and (location == "house" or location == "outdoors"
+                               ) and (attendees == "close-friends-families"
+                                      or attendees == "large-group"):
         category = "Homemade_Liqueur"
-    else: 
+    else:
         category = "Cocktail"
 
-    try: 
-        response = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/filter.php?c={category}")
+    try:
+        response = requests.get(
+            f"https://www.thecocktaildb.com/api/json/v1/1/filter.php?c={category}"
+        )
         response.raise_for_status()
 
         data = response.json()
@@ -436,7 +454,9 @@ def recommend_drink(event, location, attendees):
 
         if drinks:
             recommended_drink = random.choice(drinks)
-            drink_data = requests.get(f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recommended_drink['idDrink']}")
+            drink_data = requests.get(
+                f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recommended_drink['idDrink']}"
+            )
             response.raise_for_status()
             found_drink = drink_data.json()
             drink = found_drink.get("drinks")[0]
@@ -463,7 +483,10 @@ def questionnaire():
             if recommended:
                 return render_template("questionnaire.html", recommended=recommended)
         else:
-            return render_template("questionnaire.html", error="Please fill out all 3 questions to receive a recommendation.")
+            return render_template(
+                "questionnaire.html",
+                error=
+                "Please fill out all 3 questions to receive a recommendation.")
 
     return render_template("questionnaire.html")
 
