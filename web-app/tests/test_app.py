@@ -89,7 +89,6 @@ def test_login_post_invalid_credentials(mock_users, client_fixture):
 
 
 # tests for dashboard (ai)
-
 @patch("app.openai.OpenAI")
 def test_chat_post_success(mock_openai_class, client_fixture):
     session(client_fixture)
