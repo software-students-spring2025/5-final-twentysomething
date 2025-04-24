@@ -25,9 +25,50 @@ git clone https://github.com/software-students-spring2025/5-final-twentysomethin
 cd 5-final-twentysomething
 ```
 
-## Testing
-From the root directory, you can easily run the unit tests for both the database and web app code with code coverage.
+2. Create an .env file in the root directory with [env.example](https://github.com/software-students-spring2025/5-final-twentysomething/blob/main/env.example). Set the environment variables with real values instead. 
 
+3. Create a virtual environment with `pip`:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
+4. Navigate to the web-app directory:
+
+```
+cd web-app
+```
+
+5. Install dependencies and activate environment:
+
+```
+pipenv shell
+```
+
+6. You can start up the web application with Docker from the root directory or locally from the web-app directory. If using Docker, make sure to have it running in the background.
+```
+# Using Docker
+docker-compose up --build
+```
+
+```
+# Locally 
+python app.py
+```
+
+After, you can visit localhost through http://127.0.0.1:5001. 
+
+## Testing
+From the web-app directory, you can easily run the unit tests for the web app subsystem with code coverage. 
+
+```
+python3 -m pytest --cov=.
+```
+
+## Container Images
+
+- [Web-app Container Image](https://hub.docker.com/r/chrisimkim/web-app)
 
 ## Contributors
 
@@ -37,4 +78,5 @@ From the root directory, you can easily run the unit tests for both the database
 - [Claire Kim](https://github.com/radishsoups)
 
 ## Acknowledgements
+
 - [Free Cocktail API](https://www.thecocktaildb.com/api.php)
