@@ -2,10 +2,12 @@ import os
 import requests
 import random
 import openai
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+import base64
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -470,6 +472,56 @@ def questionnaire():
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
+@app.route("/takepicture")
+def take_picture():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    return render_template("takepicture.html")
+
+@app.route("/journal")
+def journal():
+    journal_entries = session.get("journal_entries", [])
+    return render_template("journal.html", journal_entries=journal_entries)
+
+
+@app.route("/upload_image", methods=["POST"])
+def upload_image():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    data = request.get_json()
+    image_data = data.get("image")
+    caption = data.get("caption", "")
+    date_str = datetime.now().strftime("%m/%d/%Y")
+
+    if image_data and image_data.startswith("data:image/png;base64,"):
+        image_data = image_data.replace("data:image/png;base64,", "")
+        image_bytes = base64.b64decode(image_data)
+
+        filename = f"journal_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+        save_path = os.path.join("static", "uploads")
+        os.makedirs("static/uploads", exist_ok=True)
+        file_path = os.path.join(save_path, filename)
+
+        with open(file_path, "wb") as f:
+            f.write(image_bytes)
+
+        # Store journal entry (example using session, ideally store in DB)
+        new_entry = {
+            "image_url": f"/static/uploads/{filename}",
+            "date": date_str,
+            "caption": caption
+        }
+
+        journal_entries = session.get("journal_entries", [])
+        journal_entries.append(new_entry)
+        session["journal_entries"] = journal_entries
+
+        return jsonify({"status": "success"})
+
+    return jsonify({"status": "error"})
+
 
 
 if __name__ == "__main__":
