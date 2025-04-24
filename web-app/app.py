@@ -396,6 +396,13 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
+@app.route("/takepicture")
+def take_picture():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    return render_template("takepicture.html")
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
