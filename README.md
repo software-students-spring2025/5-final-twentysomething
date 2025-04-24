@@ -3,7 +3,7 @@
 # Final Project
 
 ## Project Description
-A web app that allows users to input a mood and receive a cocktail recipe in return. Users can create accounts to save recipes and keep a photo journal.
+A web app that allows users to input a mood, event, or vibe to receive a cocktail recipe in return. Users can create accounts to save recipes and keep a photo journal.
 
 
 ## Prerequisites
