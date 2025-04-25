@@ -24,7 +24,9 @@
         {% for cocktail in recommended %}
         <div class="cocktail-card">
             <a href="/recipe/{{ cocktail.id }}">
-                <img src="{{ cocktail.strDrinkThumb }}" alt="{{ cocktail.strDrink }}" class="cocktail-image" />
+                <div style="background-image: url({{cocktail.strDrinkThumb}}); background-size: cover; background-position: center center;"
+                    class="drink-image"></div>
+                <!-- <img src="{{ cocktail.strDrinkThumb }}" alt="{{ cocktail.strDrink }}" class="cocktail-image" /> -->
                 <p class="cocktail-name">{{ cocktail.strDrink }}</p>
             </a>
         </div>
