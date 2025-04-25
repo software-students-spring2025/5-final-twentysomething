@@ -168,6 +168,19 @@ def search():
     query = request.args.get('query', '').lower().strip()
     recommended = []
 
+    mongo_drinks = additional_drinks.find(
+        {"strDrink": {
+            "$regex": query,
+            "$options": "i"
+        }})
+
+    for drink in mongo_drinks:
+        recommended.append({
+            "id": drink["idDrink"],
+            "strDrink": drink["strDrink"],
+            "strDrinkThumb": drink.get("strDrinkThumb", "")
+        })
+
     if query:
         try:
             response = requests.get(
@@ -204,8 +217,8 @@ def search():
         except requests.exceptions.RequestException as e:
             print("API Error:", e)
 
-    if not query and not recommended:
-        recommended = [{
+    else:
+        recommended += [{
             "id":
             "11000",
             "strDrink":
@@ -242,6 +255,20 @@ def search():
 def browse_by_letter(letter):
     letter = letter.lower()
     recommended = []
+
+    mongo_drinks = additional_drinks.find(
+        {"strDrink": {
+            "$regex": f"^{letter}",
+            "$options": "i"
+        }})
+
+    if mongo_drinks:
+        for drink in mongo_drinks:
+            recommended.append({
+                "id": drink["idDrink"],
+                "strDrink": drink["strDrink"],
+                "strDrinkThumb": drink.get("strDrinkThumb", "")
+            })
 
     try:
         response = requests.get(
@@ -282,31 +309,19 @@ def recipe(recipe_id):
         return redirect(url_for("login"))
 
     if request.method == "GET":
-        if int(recipe_id) > 17840:
-            user = users.find_one({"username": session["username"]})
+        cocktail = additional_drinks.find_one({"idDrink": recipe_id})
 
-            if not user:
-                print("User not found.")
-
-            cocktail = next((drink for drink in user.get("saved_drinks", [])
-                             if str(drink.get("id")) == recipe_id), None)
-            if not cocktail:
-                print("Drink not found")
-
+        if cocktail:
             ingredients = []
             image = cocktail.get("strDrinkThumb", "")
 
             for i in range(1, 16):
-                ingredient = cocktail.get(f"strIngredient{i}")
-                measure = cocktail.get(f"strMeasure{i}")
+                ing = cocktail.get(f"strIngredient{i}")
+                meas = cocktail.get(f"strMeasure{i}")
+                if ing:
+                    ingredients.append(f"{meas or ''} {ing}".strip())
 
-                if ingredient and ingredient.strip():
-                    # Combine measure and ingredient into one string
-                    combined = f"{measure.strip()} {ingredient.strip()}" if measure else ingredient.strip(
-                    )
-
-                    ingredients.append(combined)
-
+            user = users.find_one({"username": session["username"]})
             saved = any(drink["id"] == recipe_id
                         for drink in user.get("saved_drinks", []))
 
@@ -314,8 +329,39 @@ def recipe(recipe_id):
                                    cocktail=cocktail,
                                    ingredients=ingredients,
                                    image=image,
-                                   saved=saved,
-                                   drinkId=recipe_id)
+                                   saved=saved)
+
+        if recipe_id.isdigit() and int(recipe_id) > 17840:
+            user = users.find_one({"username": session["username"]})
+
+            if not user:
+                print("User not found.")
+
+            cocktail = next((drink for drink in user.get("saved_drinks", [])
+                             if str(drink.get("id")) == recipe_id), None)
+            if cocktail:
+                ingredients = []
+                image = cocktail.get("strDrinkThumb", "")
+
+                for i in range(1, 16):
+                    ingredient = cocktail.get(f"strIngredient{i}")
+                    measure = cocktail.get(f"strMeasure{i}")
+
+                    if ingredient and ingredient.strip():
+                        combined = f"{measure.strip()} {ingredient.strip()}" if measure else ingredient.strip(
+                        )
+
+                        ingredients.append(combined)
+
+                saved = any(drink["id"] == recipe_id
+                            for drink in user.get("saved_drinks", []))
+
+                return render_template("recipe.html",
+                                       cocktail=cocktail,
+                                       ingredients=ingredients,
+                                       image=image,
+                                       saved=saved,
+                                       drinkId=recipe_id)
 
         try:
             response = requests.get(
@@ -385,25 +431,17 @@ def save_and_redirect(recipe_id):
                     }
                 })
             else:
-                user = users.find_one({"username": session["username"]})
+                cocktail = additional_drinks.find_one({"idDrink": recipe_id})
 
-                saved = any(
-                    str(drink["id"]["$numberInt"]) == recipe_id if isinstance(
-                        drink["id"], dict) else str(drink["id"]) == recipe_id
-                    for drink in user.get("saved_drinks", []))
-
-                if not saved:
-                    if cocktail:
-                        users.update_one({"_id": user["_id"]}, {
-                            "$push": {
-                                "saved_drinks": {
-                                    "id": cocktail['id'],
-                                    "strDrink": cocktail.get('strDrink'),
-                                    "strDrinkThumb":
-                                    cocktail.get('strDrinkThumb')
-                                }
-                            }
-                        })
+                users.update_one({"_id": user["_id"]}, {
+                    "$addToSet": {
+                        "saved_drinks": {
+                            "id": cocktail['idDrink'],
+                            "name": cocktail['strDrink'],
+                            "image": cocktail['strDrinkThumb']
+                        }
+                    }
+                })
 
         except requests.exceptions.RequestException as e:
             print("Error fetching cocktail data:", e)
@@ -568,7 +606,6 @@ def custom():
 
         user = users.find_one({"username": session["username"]})
 
-        # Initialize saved_drinks if not found
         if not user or "saved_drinks" not in user:
             saved_drinks = []
         else:
