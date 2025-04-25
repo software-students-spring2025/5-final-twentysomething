@@ -1,0 +1,99 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Playfair Display', serif;
+    color: #F0DAB4;
+    background-color: #160E04 !important;
+}
+
+a {
+    color: #F0DAB4;
+    text-decoration: none;
+}
+
+#custom-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    margin: 1em;
+}
+
+label {
+    width: 100%;
+    font-size: 0.9rem;
+    letter-spacing: 0.15rem;
+    align-self: flex-start;
+}
+
+input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 2px solid #F0DAB4;
+    border-radius: 10px;
+    background: transparent;
+    color: #FDFFF6;
+    font-size: 0.9rem;
+}
+
+input:focus {
+    outline: none;
+    border-color: #F2DFBA;
+}
+
+.measurement {
+    width: 20%;
+    margin-right: 0.5rem;
+}
+
+.submit-btn {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    padding: 12px 12px;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 12rem;
+    background-color: #F2DFBA;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+    text-align: center;
+    align-self: center;
+}
+
+.submit-btn:hover,
+.add-btn:hover {
+    background-color: transparent;
+    color: #F2DFBA;
+    border: 2px solid #F2DFBA;
+}
+
+.add-btn {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    padding: 10px 10px;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 10rem;
+    background-color: #F2DFBA;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+    text-align: center;
+    align-self: center;
+}

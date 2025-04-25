@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,11 +17,12 @@
     }
   </script>
 </head>
+
 <body>
   <header class="navbar">
     <button class="menu-btn" onclick="toggleMenu()">
       <img src="{{ url_for('static', filename='img/icon.svg') }}" alt="Menu" class="menu-icon">
-    </button>    
+    </button>
 
     <a href="/dashboard" class="title-link">
       <h1 class="title">COCKTAIL GENERATOR</h1>
@@ -34,6 +36,7 @@
     <a href="/dashboard">Dashboard</a>
     <a href="/search">Search Recipes</a>
     <a href="/saved">My Saved Recipes</a>
+    <a href="/custom">Add New Recipe</a>
     <a href="/spin">Spin The Wheel</a>
     <a href="/questionnaire">Questionnaire</a>
   </aside>
@@ -42,4 +45,5 @@
     {% block content %}{% endblock %}
   </div>
 </body>
+
 </html>
