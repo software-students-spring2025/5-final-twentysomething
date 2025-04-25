@@ -45,9 +45,9 @@
             <button type="button" class="add-btn" onclick="addIngredient()">Add Ingredient</button>
         </div>
 
-        <div style="text-align: center;">
+        <form method="POST" action="{{ url_for('custom', recipe_id=drinkId) }}">
             <button type="submit" class="submit-btn">Save Recipe</button>
-        </div>
+        </form>
     </form>
 
     <script>
