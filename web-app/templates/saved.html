@@ -18,9 +18,9 @@
     <div class="recipes">
         {% for drink in saved %}
         <div class="recipe-row">
-            <a href="/recipe/{{ drink.id }}"><img src="{{ drink.image }}" class="drink-image" width="200"
+            <a href="/recipe/{{ drink.id }}"><img src="{{ drink.strDrinkThumb}}" class="drink-image" width="200"
                     height="200"></a>
-            <p class="recipe-name"><a href="/recipe/{{ drink.id }}">{{ drink.name }}</a></p>
+            <p class="recipe-name"><a href="/recipe/{{ drink.id }}">{{ drink.strDrink}}</a></p>
         </div>
         {% endfor %}
     </div>

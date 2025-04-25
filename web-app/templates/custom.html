@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Add a Custom Drink | Cocktail Generator{% endblock %}
+
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
+    rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
+{% endblock %}
+
+{% block content %}
+<section class="content">
+    <form id="custom-form" method="POST" action="/custom">
+        <div class="form-row">
+            <label for="strDrink">Drink Name</label>
+            <input type="text" id="strDrink" name="strDrink" required />
+        </div>
+
+        <div class="form-row">
+            <label for="strGlass">Type of Glass</label>
+            <input type="text" id="strGlass" name="strGlass" required />
+        </div>
+
+        <div class="form-row">
+            <label for="strInstructions">Instructions</label>
+            <input type="text" id="strInstructions" name="strInstructions" required />
+        </div>
+
+        <div class="form-row">
+            <label for="strDrinkThumb">Link to Drink Image</label>
+            <input type="text" id="strDrinkThumb" name="strDrinkThumb" required />
+        </div>
+
+        <div class="form-row">
+            <label>Ingredient</label>
+            <input type="text" class="measurement" id="strMeasure1" name="strMeasure1" placeholder="1 oz" />
+            <input type="text" id="strIngredient1" name="strIngredient1" placeholder="ingredient" />
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem;">
+            <button type="button" class="add-btn" onclick="addIngredient()">Add Ingredient</button>
+        </div>
+
+        <div style="text-align: center;">
+            <button type="submit" class="submit-btn">Save Recipe</button>
+        </div>
+    </form>
+
+    <script>
+        let ingredientCount = 1;
+        const maxIngredients = 15;
+
+        function addIngredient() {
+            if (ingredientCount >= maxIngredients) {
+                alert("You can only add up to 15 ingredients.");
+                return;
+            }
+
+            ingredientCount++;
+
+            const form = document.getElementById("custom-form");
+
+            const formRow = document.createElement("div");
+            formRow.className = "form-row";
+
+            const label = document.createElement("label");
+            label.textContent = "Ingredient";
+
+            const measureInput = document.createElement("input");
+            measureInput.type = "text";
+            measureInput.className = "measurement";
+            measureInput.id = "strMeasure" + ingredientCount;
+            measureInput.name = "strMeasure" + ingredientCount;
+            measureInput.placeholder = "1 oz";
+
+            const ingredientInput = document.createElement("input");
+            ingredientInput.type = "text";
+            ingredientInput.id = "strIngredient" + ingredientCount;
+            ingredientInput.name = "strIngredient" + ingredientCount;
+            ingredientInput.placeholder = "ingredient";
+
+            formRow.appendChild(label);
+            formRow.appendChild(measureInput);
+            formRow.appendChild(ingredientInput);
+
+            // Insert before the submit button
+            const submitBtn = form.querySelector(".add-btn");
+            form.insertBefore(formRow, submitBtn.parentElement);
+        }
+    </script>
+
+</section>
+{% endblock %}

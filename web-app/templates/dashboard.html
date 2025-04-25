@@ -21,6 +21,7 @@
     <div class="dashboard-buttons">
       <a href="/search" class="dash-btn">Search Recipes</a>
       <a href="/saved" class="dash-btn">My Saved Recipes</a>
+      <a href="/custom" class="dash-btn">Add New Recipe</a>
       <p class="subtext">Not Sure What Drink to Make?<br>No problem.</p>
       <a href="/spin" class="dash-btn">Spin The Wheel</a>
       <a href="/questionnaire" class="dash-btn">Questionnaire</a>
@@ -40,32 +41,32 @@
 </div>
 
 <script>
-function toggleAi() {
-  const popup = document.getElementById("aiPopup");
-  popup.style.display = popup.style.display === "block" ? "none" : "block";
-}
-
-async function sendAi(event) {
-  event.preventDefault();
-  const textarea = document.querySelector("#ai-form textarea");
-  const responseBox = document.getElementById("ai-response");
-  const user_input = textarea.value;
-
-  const res = await fetch("/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `user_input=${encodeURIComponent(user_input)}`
-  });
-
-  const html = await res.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const response = doc.querySelector(".ai-response");
-
-  if (response) {
-    responseBox.innerHTML = response.innerHTML;
-    textarea.value = "";
+  function toggleAi() {
+    const popup = document.getElementById("aiPopup");
+    popup.style.display = popup.style.display === "block" ? "none" : "block";
   }
-}
+
+  async function sendAi(event) {
+    event.preventDefault();
+    const textarea = document.querySelector("#ai-form textarea");
+    const responseBox = document.getElementById("ai-response");
+    const user_input = textarea.value;
+
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `user_input=${encodeURIComponent(user_input)}`
+    });
+
+    const html = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const response = doc.querySelector(".ai-response");
+
+    if (response) {
+      responseBox.innerHTML = response.innerHTML;
+      textarea.value = "";
+    }
+  }
 </script>
 {% endblock %}
