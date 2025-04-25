@@ -361,7 +361,7 @@ def recipe(recipe_id):
                                        ingredients=ingredients,
                                        image=image,
                                        saved=saved,
-                                       drinkId=recipe_id)
+                                       drinkId=str(recipe_id))
 
         try:
             response = requests.get(
@@ -396,7 +396,7 @@ def recipe(recipe_id):
                                    ingredients=ingredients,
                                    image=image,
                                    saved=saved,
-                                   drinkId=recipe_id)
+                                   drinkId=str(recipe_id))
 
         except requests.exceptions.RequestException as e:
             print("API Error:", e)
@@ -424,7 +424,7 @@ def save_and_redirect(recipe_id):
                 users.update_one({"_id": user["_id"]}, {
                     "$addToSet": {
                         "saved_drinks": {
-                            "id": cocktail['idDrink'],
+                            "id": str(cocktail['idDrink']),
                             "strDrink": cocktail['strDrink'],
                             "strDrinkThumb": cocktail['strDrinkThumb']
                         }
@@ -436,9 +436,9 @@ def save_and_redirect(recipe_id):
                 users.update_one({"_id": user["_id"]}, {
                     "$addToSet": {
                         "saved_drinks": {
-                            "id": cocktail['idDrink'],
-                            "name": cocktail['strDrink'],
-                            "image": cocktail['strDrinkThumb']
+                            "id": str(cocktail['idDrink']),
+                            "strDrink": cocktail['strDrink'],
+                            "strDrinkThumb": cocktail['strDrinkThumb']
                         }
                     }
                 })
@@ -455,6 +455,7 @@ def unsave_drink(recipe_id):
         return redirect(url_for("login"))
 
     user = users.find_one({"username": session["username"]})
+
     if user:
         users.update_one({"_id": user["_id"]},
                          {"$pull": {
