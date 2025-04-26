@@ -10,9 +10,7 @@ body {
   font-family: 'Playfair Display', serif;
   color: #1F0F08;
   background-color: #f9f5ef !important;
-
 }
-
 
 .journal-section {
   text-align: center;
@@ -37,39 +35,76 @@ body {
 .journal-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0 em;
+  gap: 0em;
   justify-items: center;
   padding: 0 1em;
 }
 
+/* Flip Card */
 .polaroid {
-  position: relative;
-  background-color: white;
-  padding: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   width: 200px;
   height: 260px;
+  perspective: 1000px;
+  margin-bottom: 2em;
+}
+
+.flip-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 10px;
+}
+
+.flip-card-front {
+  z-index: 2;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  justify-content: center;
+  padding: 20px;
 }
 
 .clip {
   width: 30px;
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
+  margin-bottom: 8px;
 }
 
 .photo {
   width: 180px;
-  height: 2000px;
+  height: 200px;
   background-color: #ccc;
   object-fit: cover;
   margin-bottom: 8px;
+  border-radius: 4px;
 }
 
 .date {
@@ -78,9 +113,10 @@ body {
   color: #333;
 }
 
-.caption {
-  font-size: 0.75em;
+.caption-back {
+  font-size: 0.85em;
   color: #555;
-  margin-top: 4px;
-  padding: 0 6px;
+  font-family: 'Playfair Display', serif;
+  padding: 0 8px;
+  text-align: center;
 }
