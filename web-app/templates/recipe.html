@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block content %}
+
 <section class="content">
     <h1>{{ cocktail.strDrink }}</h1>
     <p class="glass"><strong>Glass:</strong> {{ cocktail.strGlass }}</p>
@@ -34,11 +35,13 @@
         <img src="{{ image }}" width="200" height="200" class="drink-image">
     </div>
     {% if saved %}
-    <form method="POST" action="{{ url_for('unsave_drink', recipe_id=cocktail.idDrink) }}">
+    <form method="POST"
+        action="{{ url_for('unsave_drink', recipe_id=cocktail.id if cocktail.id else (drinkId if drinkId else cocktail.idDrink)) }}">
         <button type="submit" class="btn">UNSAVE</button>
     </form>
     {% else %}
-    <form method="POST" action="{{ url_for('save_and_redirect', recipe_id=cocktail.idDrink) }}">
+    <form method="POST"
+        action="{{ url_for('save_and_redirect', recipe_id=cocktail.id if cocktail.id else (drinkId if drinkId else cocktail.idDrink)) }}">
         <button type="submit" class="btn">SAVE</button>
     </form>
     {% endif %}

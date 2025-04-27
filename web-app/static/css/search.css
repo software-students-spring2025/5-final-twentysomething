@@ -65,7 +65,7 @@ a {
 
 }
 
-.browse-title{
+.browse-title {
   margin-top: 3em;
   font-size: 1.6em;
   font-weight: bold;
@@ -73,6 +73,7 @@ a {
   letter-spacing: 0.05em;
 
 }
+
 .recommended-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -122,4 +123,10 @@ a {
 
 .alphabet-links a:hover {
   text-decoration: underline;
+}
+
+.drink-image {
+  width: 350px;
+  height: 350px;
+  border-radius: 8px;
 }

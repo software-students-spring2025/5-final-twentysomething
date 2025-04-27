@@ -9,10 +9,10 @@ python-dotenv = "*"
 pymongo = "*"
 dotenv = "*"
 requests = "*"
-bson = "*"
 pytest = "*"
 coverage = "*"
 pytest-cov = "*"
+openai = "*"
 
 [dev-packages]
 
