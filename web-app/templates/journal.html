@@ -18,14 +18,28 @@
     <div class="journal-grid">
         {% for entry in journal_entries %}
         <div class="polaroid">
-            <img class="clip" src="{{ url_for('static', filename='img/woodclip' ~ (loop.index % 3 + 1) ~ '.svg') }}" alt="clip" />
-            <img class="photo" src="{{ entry.image_url }}" alt="memory photo" />
-            <p class="date">{{ entry.date }}</p>
-            {% if entry.caption %}
-            <p class="caption">{{ entry.caption }}</p>
-            {% endif %}
-        </div>        
+            <div class="flip-card" onclick="flipCard(this)">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <img class="clip" src="{{ url_for('static', filename='img/woodclip' ~ (loop.index % 3 + 1) ~ '.svg') }}" alt="clip" />
+                  <img class="photo" src="{{ entry.image_url }}" alt="memory photo" />
+                  <p class="date">{{ entry.date }}</p>
+                </div>
+                <div class="flip-card-back">
+                  <p class="caption-back">{{ entry.caption or 'No caption' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+         
         {% endfor %}
     </div>
 </section>
+
+<script>
+    function flipCard(card) {
+        card.classList.toggle('flipped');
+    }
+</script>
+    
 {% endblock %}
