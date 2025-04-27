@@ -1,6 +1,6 @@
 import pytest
 import requests
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from app import app, recommend_drink
 from werkzeug.security import generate_password_hash
 
@@ -69,7 +69,7 @@ def test_login_get_request(client_fixture):
 def test_login_post_valid_credentials(mock_users, client_fixture):
     mock_users.find_one.return_value = {
         "username": "testuser",
-        "password": generate_password_hasgith("testpass")
+        "password": generate_password_hash("testpass")
     }
 
     response = client_fixture.post("/login",
@@ -457,4 +457,3 @@ def test_upload_image_success(client_fixture):
     assert response.status_code == 200
     assert response.is_json
     assert response.get_json()["status"] == "success"
-
