@@ -32,6 +32,12 @@ def test_signup_get_request(client_fixture):
     assert response.status_code == 200
     assert b"Sign Up" in response.data
 
+
+def test_signup_post_missing_fields(client_fixture):
+    response = client_fixture.post("/signup", data={"username": ""}, follow_redirects=True)
+    assert response.status_code == 400
+
+
 @patch("app.users")
 def test_signup_post_new_user(mock_users, client_fixture):
     mock_users.find_one.return_value = None  # simulate no user
@@ -47,6 +53,7 @@ def test_signup_post_new_user(mock_users, client_fixture):
     assert response.status_code == 200
     assert b"Login" in response.data or b"Sign Up" in response.data
 
+
 @patch("app.users")
 def test_signup_post_existing_user(mock_users, client_fixture):
     mock_users.find_one.return_value = {"username": "existinguser"}
@@ -60,11 +67,24 @@ def test_signup_post_existing_user(mock_users, client_fixture):
 
     assert b"User already exists. Try logging in." in response.data
 
+
 # tests for login route
 def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
+
+def test_login_post_missing_fields(client_fixture):
+    response = client_fixture.post("/login", data={"username": ""}, follow_redirects=True)
+    assert response.status_code == 400
+
+
+def test_login_page_when_logged_in(client_fixture):
+    session(client_fixture)
+    response = client_fixture.get("/login", follow_redirects=True)
+    assert response.status_code == 200
+
 
 @patch("app.users")
 def test_login_post_valid_credentials(mock_users, client_fixture):
@@ -83,6 +103,7 @@ def test_login_post_valid_credentials(mock_users, client_fixture):
     assert response.status_code == 200
     assert b"Dashboard" in response.data or b"COCKTAIL GENERATOR" in response.data  # depending on dashboard.html
 
+
 @patch("app.users")
 def test_login_post_invalid_credentials(mock_users, client_fixture):
     mock_users.find_one.return_value = None  # simulate no user
@@ -96,7 +117,7 @@ def test_login_post_invalid_credentials(mock_users, client_fixture):
 
     assert b"Invalid username or password." in response.data
 
-# test for logut route
+# test for logout route
 def test_logout_clears_session(client_fixture):
     with client_fixture.session_transaction() as sess:
         sess["username"] = "testuser"
@@ -105,6 +126,20 @@ def test_logout_clears_session(client_fixture):
 
     assert response.status_code == 200
     assert b"Login" in response.data or b"Sign Up" in response.data  
+
+
+def test_logout_without_login(client_fixture):
+    response = client_fixture.get("/logout", follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Login" in response.data
+
+
+# test for dashboard route
+def test_dashboard_access_when_logged_in(client_fixture):
+    session(client_fixture)
+    response = client_fixture.get("/dashboard")
+    assert response.status_code == 200
+    assert b"Dashboard" in response.data or b"COCKTAIL GENERATOR" in response.data
 
 
 # tests for spin route
@@ -487,3 +522,26 @@ def test_chat_completion_success(mock_openai, client_fixture):
     assert response.status_code == 200
     assert b"I recommend..." in response.data
     assert b"Mojito" in response.data
+
+
+@patch("app.openai.OpenAI")
+def test_chat_post_empty_input(mock_openai, client_fixture):
+    session(client_fixture)
+
+    response = client_fixture.post("/chat", data={"user_input": ""})
+    
+    assert response.status_code == 200
+    assert b"Something went wrong" in response.data
+
+
+@patch("app.openai.OpenAI")
+def test_chat_api_error(mock_openai, client_fixture):
+    session(client_fixture)
+
+    mock_client = MagicMock()
+    mock_client.chat.completions.create.side_effect = Exception("API Failure")
+    mock_openai.return_value = mock_client
+
+    response = client_fixture.post("/chat", data={"user_input": "I want a drink"})
+    assert response.status_code == 200
+    assert b"Error" in response.data
