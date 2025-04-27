@@ -45,8 +45,12 @@ def home():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            error = "Please fill out both username and password."
+            return render_template("signup.html", error=error), 200  
 
         if users.find_one({"username": username}):
             error = "User already exists. Try logging in."
@@ -62,8 +66,12 @@ def signup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            error = "Please fill out both username and password."
+            return render_template("login.html", error=error), 200
 
         user = users.find_one({"username": username})
         if user and check_password_hash(user["password"], password):
@@ -74,6 +82,7 @@ def login():
             return render_template("login.html", error=error)
 
     return render_template("login.html")
+
 
 
 @app.route("/dashboard")

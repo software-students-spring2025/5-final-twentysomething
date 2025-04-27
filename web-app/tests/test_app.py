@@ -26,6 +26,13 @@ def session(client_fixture):
         sess["username"] = "testing_user"
 
 
+# test for landing
+def test_landing_page(client_fixture):
+    response = client_fixture.get("/")
+    assert response.status_code == 200
+    assert b"COCKTAIL GENERATOR" in response.data
+
+
 # tests for signup route
 def test_signup_get_request(client_fixture):
     response = client_fixture.get("/signup")
@@ -34,8 +41,15 @@ def test_signup_get_request(client_fixture):
 
 
 def test_signup_post_missing_fields(client_fixture):
-    response = client_fixture.post("/signup", data={"username": ""}, follow_redirects=True)
-    assert response.status_code == 400
+    response = client_fixture.post("/signup", data={"username": ""})
+    assert response.status_code == 200
+    assert b"Please fill out both username and password." in response.data
+
+
+def test_signup_post_empty_fields(client_fixture):
+    response = client_fixture.post("/signup", data={"username": "", "password": ""})
+    assert response.status_code == 200
+    assert b"Please fill out both username and password." in response.data
 
 
 @patch("app.users")
@@ -76,8 +90,15 @@ def test_login_get_request(client_fixture):
 
 
 def test_login_post_missing_fields(client_fixture):
-    response = client_fixture.post("/login", data={"username": ""}, follow_redirects=True)
-    assert response.status_code == 400
+    response = client_fixture.post("/login", data={"username": ""})
+    assert response.status_code == 200
+    assert b"Please fill out both username and password." in response.data
+
+
+def test_login_post_empty_fields(client_fixture):
+    response = client_fixture.post("/login", data={"username": "", "password": ""})
+    assert response.status_code == 200
+    assert b"Please fill out both username and password." in response.data
 
 
 def test_login_page_when_logged_in(client_fixture):
@@ -140,6 +161,12 @@ def test_dashboard_access_when_logged_in(client_fixture):
     response = client_fixture.get("/dashboard")
     assert response.status_code == 200
     assert b"Dashboard" in response.data or b"COCKTAIL GENERATOR" in response.data
+
+
+def test_dashboard_redirects_if_not_logged_in(client_fixture):
+    response = client_fixture.get("/dashboard", follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
 
 
 # tests for spin route
@@ -545,3 +572,39 @@ def test_chat_api_error(mock_openai, client_fixture):
     response = client_fixture.post("/chat", data={"user_input": "I want a drink"})
     assert response.status_code == 200
     assert b"Error" in response.data
+
+
+@patch("app.openai.OpenAI")
+def test_chat_no_user_input(mock_openai, client_fixture):
+    session(client_fixture)
+    response = client_fixture.post("/chat", data={"user_input": ""})
+    assert response.status_code == 200
+    assert b"Something went wrong" in response.data
+
+
+def test_chat_redirects_if_not_logged_in(client_fixture):
+    response = client_fixture.post("/chat", data={"user_input": "test"}, follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+
+@patch("app.openai.OpenAI")
+@patch("app.additional_drinks.find_one")
+@patch("requests.get")
+def test_chat_no_cocktail_found(mock_requests_get, mock_find_one, mock_openai, client_fixture):
+    session(client_fixture)
+
+    mock_client = MagicMock()
+    mock_completion = MagicMock()
+    mock_completion.choices = [MagicMock(message=MagicMock(content="NonexistentDrink\nA rare drink."))]
+    mock_client.chat.completions.create.return_value = mock_completion
+    mock_openai.return_value = mock_client
+
+    mock_find_one.return_value = None
+
+    mock_requests_get.return_value.status_code = 200
+    mock_requests_get.return_value.json.return_value = {"drinks": None}
+
+    response = client_fixture.post("/chat", data={"user_input": "Give me a rare drink"})
+    assert response.status_code == 200
+    assert b"Unfortunately, we don't have a recipe for this drink at the moment." in response.data
