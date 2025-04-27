@@ -123,4 +123,36 @@ body {
   .welcome-text h2 {
     font-size: 1.3rem;
   }
+
 }
+
+@media screen and (max-width: 480px) {
+  .profile img {
+    width: 240px;
+  }
+
+  .dash-btn {
+    font-size: 0.95rem;
+    width: 200px;
+    padding: 0.75rem 1rem;
+  }
+
+  .welcome-msg h1 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-msg h2 {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-container {
+    padding: 3rem 1rem;
+  }
+
+.welcome-text h2 {
+  font-size: 1.3rem;
+}
+
+}
+
+
