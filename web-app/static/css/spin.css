@@ -6,10 +6,12 @@
 
 html,
 body {
-    height: 100%;
-    font-family: 'Playfair Display', serif;
-    color: #F0DAB4;
-    background-color: #150C04;
+  height: 100%;
+  font-family: 'Playfair Display', serif;
+  color: #1F0F08;
+  background-image: url("../img/background.svg");
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 a {
@@ -82,7 +84,7 @@ h3{
 .pointer{
     border-left: solid 20px transparent;
     border-right: solid 20px transparent;
-    border-top: solid 50px #F0DAB4;
+    border-top: solid 50px #1F0F08;
     position: absolute;
     top: 30px;
     left: 50%;

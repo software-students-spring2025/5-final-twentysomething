@@ -1,148 +1,126 @@
 body {
-    background-color: #160E04 !important;
+  background-image: url("../img/background.svg");
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: 'Playfair Display', serif;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  color: #2f1b0c;
+  text-align: center;
+  margin-top: -30px;
+}
+
+.vintage-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  margin-bottom: 3.5rem;
+}
+
+.left-img {
+  width: 220px;
+  height: auto;
+}
+.right-img {
+  width: 140px;
+  height: auto;
+}
+
+.welcome-text h1 {
+  font-family: 'Playfair Display SC', serif;
+  font-size: 2.4rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.05em;
+  margin-right: 20px;
+}
+
+.welcome-text h2 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  border-bottom: 3px solid #2f1b0c;
+  display: inline-block;
+  margin-right: 20px;
+
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.dash-btn {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  background-color: transparent;
+  border: 2px solid #2f1b0c;
+  border-radius: 14px;
+  padding: 1.2rem 2.2rem;
+  color: #2f1b0c;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dash-btn:hover {
+  background-color: #4f4339;
+  color: #f9f5ef;
+}
+
+.subtext {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: #5a3d2e;
+  font-style: italic;
+}
+
+.page-bottom {
+  margin-top: 4rem;
+  width: 80px;
+  opacity: 0.8;
+}
+
+/* Responsive Tweaks */
+@media screen and (max-width: 768px) {
+  .vintage-header {
+    flex-direction: column;
+    gap: 2rem;
   }
-  
-  .dashboard-container {
-    display: flex;
+
+  .left-img,
+  .right-img {
+    width: 120px;
+  }
+
+  .dashboard-grid {
     flex-direction: column;
     align-items: center;
-    padding: 4rem 2rem;
-    color: #F0DAB4;
   }
-  
-  .welcome-msg h1,
-  .welcome-msg h2 {
-    font-family: 'Playfair Display SC', serif;
-    text-align: center;
-    letter-spacing: 0.08em;
-  }
-  
-  .welcome-msg h1 {
-    font-size: 2.8rem;
-    margin-bottom: 1rem;
-  }
-  
-  .welcome-msg h2 {
-    font-size: 1.8rem;
-    margin-bottom: 2.5rem;
-  }
-  
-  .dashboard-layout {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-  }
-  
-  .profile img {
-    width: 500px;
-    height: auto;
-    border-radius: 50%;
-  }
-  
-  .dashboard-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
+
   .dash-btn {
-    background-color: #F2DFBA;
-    color: #150C04;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    padding: 1rem 3rem;
-    margin: 0.8rem 0;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    letter-spacing: 0.05rem;
-    transition: background 0.3s ease, transform 0.2s ease;
-    text-decoration: none;
-    width: 280px;
-    display: inline-block;
+    font-size: 1.1rem;
+    padding: 1rem 1.8rem;
   }
-  
-  .dash-btn:hover {
-    background-color: #d9c7a3;
-    transform: scale(1.05);
+
+  .welcome-text h1 {
+    font-size: 2rem;
   }
-  
-  .subtext {
-    font-size: 1rem;
-    font-style: italic;
-    margin: 0.8rem 0;
-    text-align: center;
+
+  .welcome-text h2 {
+    font-size: 1.3rem;
   }
-  
-  @media screen and (max-width: 1024px) {
-    .profile img {
-      width: 400px;
-    }
-  
-    .welcome-msg h1 {
-      font-size: 2.2rem;
-    }
-  
-    .welcome-msg h2 {
-      font-size: 1.5rem;
-    }
-  
-    .dash-btn {
-      font-size: 1.1rem;
-      width: 240px;
-      padding: 0.9rem 2rem;
-    }
-  }
-  
-  @media screen and (max-width: 768px) {
-    .dashboard-layout {
-      flex-direction: column;
-      gap: 2.5rem;
-    }
-  
-    .profile img {
-      width: 300px;
-    }
-  
-    .dash-btn {
-      font-size: 1rem;
-      width: 220px;
-      padding: 0.8rem 1.5rem;
-    }
-  
-    .welcome-msg h1 {
-      font-size: 1.8rem;
-    }
-  
-    .welcome-msg h2 {
-      font-size: 1.3rem;
-    }
-  }
-  
-  @media screen and (max-width: 480px) {
-    .profile img {
-      width: 240px;
-    }
-  
-    .dash-btn {
-      font-size: 0.95rem;
-      width: 200px;
-      padding: 0.75rem 1rem;
-    }
-  
-    .welcome-msg h1 {
-      font-size: 1.5rem;
-    }
-  
-    .welcome-msg h2 {
-      font-size: 1.1rem;
-    }
-  
-    .dashboard-container {
-      padding: 3rem 1rem;
-    }
-  }
-  
+}
