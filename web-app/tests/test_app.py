@@ -3,6 +3,7 @@ import requests
 from unittest.mock import patch
 from app import app, recommend_drink
 from werkzeug.security import generate_password_hash
+from unittest.mock import MagicMock
 
 
 @pytest.fixture
@@ -94,6 +95,17 @@ def test_login_post_invalid_credentials(mock_users, client_fixture):
                                    follow_redirects=True)
 
     assert b"Invalid username or password." in response.data
+
+# test for logut route
+def test_logout_clears_session(client_fixture):
+    with client_fixture.session_transaction() as sess:
+        sess["username"] = "testuser"
+
+    response = client_fixture.get("/logout", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Login" in response.data or b"Sign Up" in response.data  
+
 
 # tests for spin route
 def test_spin_get_request_no_login(client_fixture):
@@ -457,3 +469,21 @@ def test_upload_image_success(client_fixture):
     assert response.status_code == 200
     assert response.is_json
     assert response.get_json()["status"] == "success"
+
+# test for /chat route
+@patch("app.openai.OpenAI")
+def test_chat_completion_success(mock_openai, client_fixture):
+    session(client_fixture)
+
+    mock_client = MagicMock()
+    mock_completion = MagicMock()
+    mock_completion.choices = [MagicMock(message=MagicMock(content="Mojito\nA refreshing rum cocktail."))]
+
+    mock_client.chat.completions.create.return_value = mock_completion
+    mock_openai.return_value = mock_client
+
+    response = client_fixture.post("/chat", data={"user_input": "I want something refreshing"})
+
+    assert response.status_code == 200
+    assert b"I recommend..." in response.data
+    assert b"Mojito" in response.data
