@@ -173,12 +173,6 @@ def test_questionnaire_post_request_failure(client_fixture):
     assert response.status_code == 200
     assert b"Please fill out all 3 questions to receive a recommendation." in response.data
 
-# tests for saved route
-def test_redirect_if_not_logged_in(client_fixture):
-    response = client_fixture.get("/saved", follow_redirects=False)
-
-    assert response.status_code == 302
-    assert "/login" in response.headers["Location"]
 
 @patch("app.users")
 def test_show_empty_saved_when_no_user_found(mock_users, client_fixture):
@@ -202,12 +196,20 @@ def test_show_saved_drinks(mock_users, client_fixture):
 
     assert response.status_code == 200
 
+# tests for saved route
+def test_saved_redirect_if_not_logged_in(client_fixture):
+    response = client_fixture.get("/saved", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+    
 # tests for recipe route
-def test_redirect_if_not_logged_in(client_fixture):
+def test_recipe_redirect_if_not_logged_in(client_fixture):
     response = client_fixture.get("/recipe/12345", follow_redirects=False)
 
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
+
 
 @patch("app.users.find_one")
 @patch("app.additional_drinks.find_one")
@@ -361,3 +363,98 @@ def test_unsave_drink(mock_update, mock_find_user, client_fixture):
                 "id": recipe_id
             }
         }})
+
+# --- tests for /search route ---
+
+def test_search_page_load(client_fixture):
+    """
+    Test that the search page loads successfully without a query.
+    """
+    session(client_fixture)
+    response = client_fixture.get("/search")
+    assert response.status_code == 200
+    assert b"Recommended Cocktails" in response.data
+
+def test_search_with_query(client_fixture):
+    """
+    Test searching with a query.
+    """
+    session(client_fixture)
+    response = client_fixture.get("/search?query=Mojito")
+    assert response.status_code == 200
+    assert b"Recommended Cocktails" in response.data  # could also check "Mojito" but depends on your mock DB
+
+
+# --- tests for /journal route ---
+
+def test_journal_no_entries(client_fixture):
+    """
+    Test the journal page when there are no journal entries.
+    """
+    session(client_fixture)
+    response = client_fixture.get("/journal")
+    assert response.status_code == 200
+    assert b"Gallery of Your Memory" in response.data
+
+def test_journal_with_entries(client_fixture):
+    """
+    Test journal page with pre-existing journal entries in session.
+    """
+    with client_fixture.session_transaction() as sess:
+        sess["username"] = "testuser"
+        sess["journal_entries"] = [{
+            "image_url": "/static/uploads/sample.png",
+            "date": "04/25/2025",
+            "caption": "Fun night!"
+        }]
+
+    response = client_fixture.get("/journal")
+    assert response.status_code == 200
+    assert b"Gallery of Your Memory" in response.data
+    assert b"Fun night!" in response.data  
+
+
+
+# --- tests for /takepicture route ---
+
+def test_takepicture_requires_login(client_fixture):
+    """
+    Test that /takepicture redirects if not logged in.
+    """
+    response = client_fixture.get("/takepicture")
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+def test_takepicture_loads_logged_in(client_fixture):
+    """
+    Test that /takepicture loads successfully if logged in.
+    """
+    session(client_fixture)
+    response = client_fixture.get("/takepicture")
+    assert response.status_code == 200
+    assert b"PhotoBooth" in response.data
+
+
+# --- tests for /upload_image route ---
+
+def test_upload_image_success(client_fixture):
+    """
+    Test uploading an image to the gallery.
+    """
+    session(client_fixture)
+    sample_base64 = (
+        "data:image/png;base64,"
+        "iVBORw0KGgoAAAANSUhEUgAAAAUA"
+        "AAAFCAYAAACNbyblAAAAHElEQVQI12P4"
+        "//8/w38GIAXDIBKE0DHxgljNBAAO"
+        "9TXL0Y4OHwAAAABJRU5ErkJggg=="
+    )
+
+    response = client_fixture.post("/upload_image",
+                                    json={"image": sample_base64, "caption": "My event"},
+                                    follow_redirects=True)
+
+    assert response.status_code == 200
+    assert response.is_json
+    assert response.get_json()["status"] == "success"
+

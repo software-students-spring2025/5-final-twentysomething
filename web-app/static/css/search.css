@@ -8,8 +8,10 @@ html,
 body {
   height: 100%;
   font-family: 'Playfair Display', serif;
-  background-color: #160E04 !important;
-  color: #faf6f0;
+  color: #1F0F08;
+  background-image: url("../img/background.svg");
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 a {
@@ -60,6 +62,8 @@ a {
   text-align: center;
   letter-spacing: 0.05em;
   margin-bottom: 1em;
+  color: #1F0F08;
+
 
 }
 
@@ -69,6 +73,9 @@ a {
   font-weight: bold;
   text-align: center;
   letter-spacing: 0.05em;
+  color: #1F0F08;
+
+  
 
 }
 
@@ -112,11 +119,15 @@ a {
   margin-top: 2em;
   text-align: center;
   font-size: 1em;
+  color: #1F0F08;
+
 }
 
 .alphabet-links a {
   margin: 0 0.2em;
   font-weight: bold;
+  color: #1F0F08;
+
 }
 
 .alphabet-links a:hover {

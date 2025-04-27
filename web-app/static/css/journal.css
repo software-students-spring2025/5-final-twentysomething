@@ -9,13 +9,14 @@ body {
   height: 100%;
   font-family: 'Playfair Display', serif;
   color: #1F0F08;
-  background-color: #f9f5ef !important;
+  background-image: url("../img/background.svg");
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .journal-section {
   text-align: center;
   padding: 2em 1em;
-  background-color: #f9f5ef;
   min-height: 100vh;
 }
 
