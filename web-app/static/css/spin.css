@@ -182,8 +182,135 @@ li{
 }
 
 /* responsive */
+@media (max-width: 1024px) {
+    .wheel-wrapper {
+        width: 450px;
+    }
+
+    .wheel {
+        width: 450px;
+        height: 450px;
+    }
+
+    .pointer {
+        border-left: solid 15px transparent;
+        border-right: solid 15px transparent;
+        border-top: solid 40px #1F0F08;
+        top: 20px;
+    }
+
+    .spin-button {
+        width: 220px;
+        height: 42px;
+        font-size: 12pt;
+    }
+
+    .box {
+        width: 400px;
+    }
+
+    img {
+        width: 250px;
+    }
+
+    h3 {
+        width: 60%;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .wheel-wrapper {
+        width: 320px;
+    }
+
+    .wheel {
+        width: 320px;
+        height: 320px;
+    }
+
+    .pointer {
+        border-left: solid 12px transparent;
+        border-right: solid 12px transparent;
+        border-top: solid 30px #1F0F08;
+        top: 10px;
+    }
+
+    .spin-button {
+        width: 200px;
+        height: 40px;
+        font-size: 11pt;
+    }
+
+    .box {
+        width: 300px;
+        padding: 20px;
+    }
+
+    img {
+        width: 200px;
+    }
+
+    .result {
+        padding: 20px;
+    }
+
+    h3 {
+        width: 80%;
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+}
+
 @media (max-width: 600px){
     .bottom-wrapper{
         flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .wheel-wrapper {
+        width: 300px;
+    }
+
+    .wheel {
+        width: 300px;
+        height: 300px;
+    }
+
+    .pointer {
+        border-left: solid 10px transparent;
+        border-right: solid 10px transparent;
+        border-top: solid 24px #1F0F08;
+        top: 8px;
+    }
+
+    .spin-button {
+        width: 180px;
+        height: 38px;
+        font-size: 10pt;
+    }
+
+    .box {
+        width: 260px;
+        padding: 15px;
+    }
+
+    img {
+        width: 180px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        width: 90%;
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    h4 {
+        font-size: 13pt;
     }
 }

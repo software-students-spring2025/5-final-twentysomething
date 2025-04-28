@@ -15,7 +15,7 @@ body {
 }
 
 a {
-  color: #F0DAB4;
+  color: #1F0F08;
   text-decoration: none;
 }
 
@@ -24,11 +24,12 @@ a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 1em;
+  padding: 2em 1em;
+  text-align: center;
 }
 
 .content h1 {
-  font-size: 1.8em;
+  font-size: 2em;
   letter-spacing: 0.1em;
   margin-bottom: 1em;
   color: #1F0F08;
@@ -39,31 +40,82 @@ a {
   grid-template-columns: repeat(2, 1fr);
   gap: 2em;
   margin-top: 2em;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .recipe-row {
+  background: #e9e3d7;
+  border-radius: 12px;
+  padding: 1em;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  transition: transform 0.2s;
+}
+
+.recipe-row:hover {
+  transform: scale(1.05);
 }
 
 .drink-image {
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
 }
 
 .recipe-name {
   margin-top: 1em;
   letter-spacing: 0.1em;
   font-size: 1.2em;
+  color: #1F0F08;
+  text-align: center;
+}
+
+@media screen and (max-width: 1024px) {
+  .recipes {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5em;
+    width: 90%;
+  }
+
+  .content h1 {
+    font-size: 1.8em;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .recipes {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+    width: 90%;
+  }
+
+  .drink-image {
+    width: 200px;
+  }
+
+  .content h1 {
+    font-size: 1.6em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .recipes {
+    width: 95%;
+    gap: 1em;
+  }
+
+  .drink-image {
+    width: 180px;
+  }
+
+  .content h1 {
+    font-size: 1.5em;
+  }
+
+  .recipe-name {
+    font-size: 1.1em;
   }
 }

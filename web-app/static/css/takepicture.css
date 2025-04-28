@@ -51,6 +51,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scaleX(-1);
 }
 
 .btn {
@@ -58,7 +59,7 @@ body {
   font-size: 1em;
   letter-spacing: 0.1em;
   padding: 10px 20px;
-  background-color: #F2DFDA;
+  background-color: #F2DFBA;
   color: #3A1E1E;
   border: none;
   border-radius: 10px;

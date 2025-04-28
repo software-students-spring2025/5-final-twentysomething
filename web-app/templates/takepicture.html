@@ -48,6 +48,8 @@
         canvas.height = video.videoHeight;
 
         const context = canvas.getContext("2d");
+        context.translate(canvas.width, 0);
+        context.scale(-1, 1);
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataURL = canvas.toDataURL("image/png");
 
@@ -56,6 +58,7 @@
         img.src = dataURL;
         img.style.width = "100%";
         img.style.borderRadius = "10px";
+        
 
         const cameraBox = document.getElementById("camera-box");
         cameraBox.innerHTML = ""; // Clear video
