@@ -6,6 +6,12 @@ from werkzeug.security import generate_password_hash
 from unittest.mock import MagicMock
 
 
+@pytest.fixture(autouse=True)
+def patch_mongo_collections():
+    with patch("app.users") as mock_users, patch("app.additional_drinks") as mock_drinks:
+        yield mock_users, mock_drinks
+
+
 @pytest.fixture
 def client_fixture():
     """
