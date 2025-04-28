@@ -144,6 +144,21 @@ input{
     padding-top: 100px;
 }
 
+.result-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .hoverable {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hoverable:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+  
 .output-title{
     font-size: 18pt;
     width: 100%;

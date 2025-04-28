@@ -89,7 +89,7 @@ h3{
 .pointer{
     border-left: solid 20px transparent;
     border-right: solid 20px transparent;
-    border-top: solid 50px #1F0F08;
+    border-top: solid 50px #78573b;
     position: absolute;
     top: 30px;
     left: 50%;
@@ -134,6 +134,22 @@ h3{
     align-items: center;
     padding: 30px;
 }
+
+.result-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .hoverable {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hoverable:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
 
 .output-title{
     font-size: 18pt;
