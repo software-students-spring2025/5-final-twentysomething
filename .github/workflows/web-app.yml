@@ -25,4 +25,4 @@ jobs:
       - name: Run tests
         run: |
           cd web-app
-          python -m unittest discover tests
+          pytest --cov=.
