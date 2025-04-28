@@ -74,32 +74,34 @@
         </form>
 
         {% if recommended %}
-        <div class="result">
-            <a href="/recipe/{{ recommended.idDrink }}" class="link">
-                <h3 class="output-title">{{ recommended.strDrink }}</h3>
-            </a>
-            
-            <div class="box-wrapper">
-                <div id="image" class="box">
-                    <img src="{{ recommended.strDrinkThumb }}"/>
-                </div>
+        <a href="/recipe/{{ recommended.idDrink }}" class="result-link">
+        <div class="result hoverable">
+            <h3 class="output-title">{{ recommended.strDrink }}</h3>
 
-                <div id="recipe" class="box">
-                    <h4>Ingredients</h4>
-                    <ul>
-                        {% for i in range(1, 16) %}
-                            {% if recommended["strIngredient" ~ i] %}
-                                <li>{{ recommended["strMeasure" ~ i] }} {{ recommended["strIngredient" ~ i] }}</li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                    <br>
-                    <h4>Instructions</h4>
-                    <p>{{ recommended.strInstructions }}</p>
-                </div>
+            <div class="box-wrapper">
+            <div id="image" class="box">
+                <img src="{{ recommended.strDrinkThumb }}" alt="{{ recommended.strDrink }} image"/>
+            </div>
+
+            <div id="recipe" class="box">
+                <h4>Ingredients</h4>
+                <ul>
+                    {% for i in range(1, 16) %}
+                        {% if recommended["strIngredient" ~ i] %}
+                            <li>{{ recommended["strMeasure" ~ i] }} {{ recommended["strIngredient" ~ i] }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <br>
+                <h4>Instructions</h4>
+                <p>{{ recommended.strInstructions }}</p>
+            </div>
             </div>
         </div>
-        {% endif %}  
+        </a>
+        {% endif %}
+
+
         
         {% if error %}
         <div>
