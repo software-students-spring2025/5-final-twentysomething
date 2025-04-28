@@ -31,10 +31,17 @@ OPENROUTER_SYSTEM_PROMPT = (
     "Format it exactly like this:\n<drink name>\n<one-sentence explanation>")
 
 # connect to MongoDB
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["mydb"]
-users = db["users"]
-additional_drinks = db["additional_drinks"]
+if os.environ.get("FLASK_ENV") != "testing":
+    client = MongoClient(os.getenv("MONGO_URI"))
+    db = client["mydb"]
+    users = db["users"]
+    additional_drinks = db["additional_drinks"]
+else:
+    client = None
+    db = None
+    users = None
+    additional_drinks = None
+
 
 
 @app.route("/")
@@ -45,8 +52,12 @@ def home():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            error = "Please fill out both username and password."
+            return render_template("signup.html", error=error), 200  
 
         if users.find_one({"username": username}):
             error = "User already exists. Try logging in."
@@ -62,8 +73,12 @@ def signup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            error = "Please fill out both username and password."
+            return render_template("login.html", error=error), 200
 
         user = users.find_one({"username": username})
         if user and check_password_hash(user["password"], password):
@@ -74,6 +89,7 @@ def login():
             return render_template("login.html", error=error)
 
     return render_template("login.html")
+
 
 
 @app.route("/dashboard")
@@ -681,6 +697,6 @@ def upload_image():
 
     return jsonify({"status": "error"})
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port, debug=True)
