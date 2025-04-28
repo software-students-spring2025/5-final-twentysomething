@@ -57,7 +57,7 @@ docker-compose up --build
 python app.py
 ```
 
-After, you can visit localhost through http://127.0.0.1:5001. 
+After, you can visit localhost through http://127.0.0.1:8080.
 
 ## Testing
 From the web-app directory, you can easily run the unit tests for the web app subsystem with code coverage. 
