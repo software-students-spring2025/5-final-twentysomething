@@ -31,6 +31,7 @@ def test_signup_get_request(client_fixture):
     assert response.status_code == 200
     assert b"Sign Up" in response.data
 
+
 @patch("app.users")
 def test_signup_post_new_user(mock_users, client_fixture):
     mock_users.find_one.return_value = None  # simulate no user
@@ -46,6 +47,7 @@ def test_signup_post_new_user(mock_users, client_fixture):
     assert response.status_code == 200
     assert b"Login" in response.data or b"Sign Up" in response.data
 
+
 @patch("app.users")
 def test_signup_post_existing_user(mock_users, client_fixture):
     mock_users.find_one.return_value = {"username": "existinguser"}
@@ -59,11 +61,13 @@ def test_signup_post_existing_user(mock_users, client_fixture):
 
     assert b"User already exists. Try logging in." in response.data
 
+
 # tests for login route
 def test_login_get_request(client_fixture):
     response = client_fixture.get("/login")
     assert response.status_code == 200
     assert b"Login" in response.data
+
 
 @patch("app.users")
 def test_login_post_valid_credentials(mock_users, client_fixture):
@@ -82,6 +86,7 @@ def test_login_post_valid_credentials(mock_users, client_fixture):
     assert response.status_code == 200
     assert b"Dashboard" in response.data or b"COCKTAIL GENERATOR" in response.data  # depending on dashboard.html
 
+
 @patch("app.users")
 def test_login_post_invalid_credentials(mock_users, client_fixture):
     mock_users.find_one.return_value = None  # simulate no user
@@ -95,6 +100,7 @@ def test_login_post_invalid_credentials(mock_users, client_fixture):
 
     assert b"Invalid username or password." in response.data
 
+
 # tests for spin route
 def test_spin_get_request_no_login(client_fixture):
     response = client_fixture.get("/spin")
@@ -102,12 +108,14 @@ def test_spin_get_request_no_login(client_fixture):
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
 
+
 def test_spin_get_request_with_login(client_fixture):
     session(client_fixture)
     response = client_fixture.get("/spin")
 
     assert response.status_code == 200
     assert b"Spin the Wheel" in response.data
+
 
 # tests for recommend_drinks function
 def test_recommend_drink_successful():
@@ -121,6 +129,7 @@ def test_recommend_drink_successful():
     assert isinstance(drink["strInstructions"], str)
     assert len(drink) == 51
 
+
 @patch("requests.get")
 def test_recommend_drink_failure(mock_requests, client_fixture):
     event = "chill"
@@ -132,6 +141,7 @@ def test_recommend_drink_failure(mock_requests, client_fixture):
 
     assert drink == None
 
+
 # tests for questionnaire route
 def test_questionnaire_get_request_no_login(client_fixture):
     response = client_fixture.get("/questionnaire")
@@ -139,12 +149,14 @@ def test_questionnaire_get_request_no_login(client_fixture):
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
 
+
 def test_questionnaire_get_request_with_login(client_fixture):
     session(client_fixture)
     response = client_fixture.get("/questionnaire")
 
     assert response.status_code == 200
     assert b"Questionnaire" in response.data
+
 
 @patch("app.recommend_drink")
 def test_questionnaire_post_request_successful(mock_recommend_drink,
@@ -161,6 +173,7 @@ def test_questionnaire_post_request_successful(mock_recommend_drink,
     assert response.status_code == 200
     assert b"Questionnaire" in response.data
 
+
 def test_questionnaire_post_request_failure(client_fixture):
     session(client_fixture)
     response = client_fixture.post("/questionnaire",
@@ -173,12 +186,14 @@ def test_questionnaire_post_request_failure(client_fixture):
     assert response.status_code == 200
     assert b"Please fill out all 3 questions to receive a recommendation." in response.data
 
+
 # tests for saved route
 def test_redirect_if_not_logged_in(client_fixture):
     response = client_fixture.get("/saved", follow_redirects=False)
 
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
+
 
 @patch("app.users")
 def test_show_empty_saved_when_no_user_found(mock_users, client_fixture):
@@ -192,6 +207,7 @@ def test_show_empty_saved_when_no_user_found(mock_users, client_fixture):
     assert response.status_code == 200
     assert b"saved" in response.data
 
+
 @patch("app.users")
 def test_show_saved_drinks(mock_users, client_fixture):
     session(client_fixture)
@@ -202,12 +218,14 @@ def test_show_saved_drinks(mock_users, client_fixture):
 
     assert response.status_code == 200
 
+
 # tests for recipe route
 def test_redirect_if_not_logged_in(client_fixture):
     response = client_fixture.get("/recipe/12345", follow_redirects=False)
 
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
+
 
 @patch("app.users.find_one")
 @patch("app.additional_drinks.find_one")
@@ -232,6 +250,7 @@ def test_recipe_found_in_db(mock_find_drinks, mock_find_user, client_fixture):
     assert b"50ml" in response.data
     assert b"http://example.com/image.jpg" in response.data
 
+
 @patch("app.users.find_one")
 @patch("app.additional_drinks.find_one")
 def test_recipe_not_found_in_db(mock_find_drinks, mock_find_user,
@@ -248,6 +267,7 @@ def test_recipe_not_found_in_db(mock_find_drinks, mock_find_user,
 
     assert response.status_code == 200
     assert b"Recipe not found" in response.data
+
 
 @patch("app.users.find_one")
 @patch("app.additional_drinks.find_one")
@@ -275,6 +295,7 @@ def test_recipe_saved_flag(mock_find_drinks, mock_find_user, client_fixture):
     assert response.status_code == 200
     assert b"saved" in response.data
 
+
 @patch("app.users.find_one")
 @patch("app.additional_drinks.find_one")
 def test_post_save_recipe(mock_find_drinks, mock_find_user, client_fixture):
@@ -298,6 +319,7 @@ def test_post_save_recipe(mock_find_drinks, mock_find_user, client_fixture):
     assert response.status_code == 200
     assert b"saved" in response.data
 
+
 # tests for save_and_redirect and unsave_and_redirect routes
 def test_redirect_if_not_logged_in(client_fixture):
     response = client_fixture.post("/save_and_redirect/12345",
@@ -308,6 +330,7 @@ def test_redirect_if_not_logged_in(client_fixture):
     response = client_fixture.post("/unsave/12345", follow_redirects=False)
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
+
 
 @patch("requests.get")
 @patch("app.users.find_one")
@@ -347,7 +370,7 @@ def test_unsave_drink(mock_update, mock_find_user, client_fixture):
         }]
     }
 
-    mock_update.return_value = None  
+    mock_update.return_value = None
 
     session(client_fixture)
 
@@ -361,3 +384,19 @@ def test_unsave_drink(mock_update, mock_find_user, client_fixture):
                 "id": recipe_id
             }
         }})
+
+
+# tests for custom route
+def test_redirect_if_not_logged_in(client_fixture):
+    response = client_fixture.get("/custom", follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+
+def test_render_custom_form(client_fixture):
+    session(client_fixture)
+
+    response = client_fixture.get("/custom")
+
+    assert response.status_code == 200
+
