@@ -5,8 +5,7 @@
 {% block head %}
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap"
-    rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&family=Playfair+Display&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/journal.css') }}" />
 {% endblock %}
 
@@ -19,19 +18,23 @@
         {% for entry in journal_entries %}
         <div class="polaroid">
             <div class="flip-card" onclick="flipCard(this)">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <img class="clip" src="{{ url_for('static', filename='img/woodclip' ~ (loop.index % 3 + 1) ~ '.svg') }}" alt="clip" />
-                  <img class="photo" src="{{ entry.image_url }}" alt="memory photo" />
-                  <p class="date">{{ entry.date }}</p>
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img class="clip" src="{{ url_for('static', filename='img/woodclip' ~ (loop.index % 3 + 1) ~ '.svg') }}" alt="clip" />
+                        <img class="photo" src="{{ entry.image_url }}" alt="memory photo" />
+                        <p class="date">{{ entry.date }}</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <form method="POST" action="{{ url_for('delete_entry', entry_id=loop.index0) }}" class="delete-form" onsubmit="return confirmDelete(event)">
+                            <button type="submit" class="delete-button">
+                                <img src="{{ url_for('static', filename='img/deleteIcon.svg') }}" alt="Delete" class="delete-icon" />
+                            </button>
+                        </form>
+                        <p class="caption-back">{{ entry.caption or 'No caption' }}</p>
+                    </div>
                 </div>
-                <div class="flip-card-back">
-                  <p class="caption-back">{{ entry.caption or 'No caption' }}</p>
-                </div>
-              </div>
             </div>
-          </div>
-         
+        </div>
         {% endfor %}
     </div>
 </section>
@@ -40,6 +43,13 @@
     function flipCard(card) {
         card.classList.toggle('flipped');
     }
+
+    function confirmDelete(event) {
+        event.preventDefault();
+        const confirmed = confirm("Are you sure you want to delete this image?");
+        if (confirmed) {
+            event.target.submit();
+        }
+    }
 </script>
-    
 {% endblock %}

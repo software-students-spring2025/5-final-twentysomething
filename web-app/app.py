@@ -601,6 +601,25 @@ def journal():
     return render_template("journal.html", journal_entries=journal_entries)
 
 
+@app.route("/delete_entry/<int:entry_id>", methods=["POST"])
+def delete_entry(entry_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    journal_entries = session.get("journal_entries", [])
+
+    if 0 <= entry_id < len(journal_entries):
+        entry = journal_entries.pop(entry_id)
+        session["journal_entries"] = journal_entries
+
+        # Remove the file physically from static/uploads
+        image_path = entry.get("image_url", "").lstrip('/')
+        if image_path and os.path.exists(image_path):
+            os.remove(image_path)
+
+    return redirect(url_for("journal"))
+
+
 @app.route("/custom", methods=['GET', 'POST'])
 def custom():
     if "username" not in session:
