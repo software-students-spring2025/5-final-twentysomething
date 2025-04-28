@@ -3,7 +3,7 @@
 # Final Project
 
 ## Project Description
-A web app that allows users to input a mood, event, or vibe to receive a cocktail recipe in return. Users can create accounts to save recipes and keep a photo journal.
+A web app that allows users to input a mood, event, or vibe to receive a cocktail recipe in return. Users can create accounts to save recipes and keep a photo journal. View and enjoy a cocktail by visiting our [CockTail Generator App](https://cocktail-generator-7zzb9.ondigitalocean.app/).
 
 
 ## Prerequisites
