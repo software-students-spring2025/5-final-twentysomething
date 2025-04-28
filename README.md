@@ -3,7 +3,7 @@
 # Final Project
 
 ## Project Description
-A web app that allows users to input a mood, event, or vibe to receive a cocktail recipe in return. Users can create accounts to save recipes and keep a photo journal.
+A web app that allows users to input a mood, event, or vibe to receive a cocktail recipe in return. Users can create accounts to save recipes and keep a photo journal. View and enjoy a cocktail by visiting our [CockTail Generator App](https://cocktail-generator-7zzb9.ondigitalocean.app/).
 
 
 ## Prerequisites
@@ -57,7 +57,7 @@ docker-compose up --build
 python app.py
 ```
 
-After, you can visit localhost through http://127.0.0.1:5001. 
+After, you can visit localhost through http://127.0.0.1:8080.
 
 ## Testing
 From the web-app directory, you can easily run the unit tests for the web app subsystem with code coverage. 
