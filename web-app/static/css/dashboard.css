@@ -263,7 +263,11 @@ body {
     }
 
     .dashboard-container {
-        padding: 3rem 1rem;
+        padding: 1rem 1rem;
+    }
+
+    .dashboard-layout{
+        margin-bottom: 50px;
     }
 
     .ai-popup {
