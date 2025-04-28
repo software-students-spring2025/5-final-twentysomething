@@ -104,7 +104,6 @@ label{
     display: inline-block;
     margin-bottom: 5px;
     padding: 2px;
-    
 }
 
 input{
@@ -203,8 +202,118 @@ li{
 }
 
 /* responsive */
+@media (max-width: 1024px) {
+    .questions {
+        gap: 30px;
+        padding: 30px;
+    }
+
+    .event_type, .location, .attendees {
+        width: 300px;
+    }
+
+    .box {
+        width: 400px;
+        height: auto;
+        padding: 20px;
+    }
+
+    img {
+        width: 250px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        width: 60%;
+        font-size: 1.1rem;
+    }
+
+    .generate-button {
+        width: 220px;
+        height: 42px;
+        font-size: 12pt;
+    }
+}
+
+@media (max-width: 768px) {
+    .questions {
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .event_type, .location, .attendees {
+        width: 260px;
+    }
+
+    .box {
+        width: 300px;
+        height: auto;
+        padding: 20px;
+    }
+
+    img {
+        width: 200px;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    h3 {
+        width: 80%;
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .generate-button {
+        width: 200px;
+        height: 40px;
+        font-size: 11pt;
+    }
+}
+
 @media (max-width: 600px){
     .questions, .result, .box-wrapper{
         flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .questions {
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .event_type, .location, .attendees {
+        width: 280px;
+    }
+
+    .box {
+        width: 260px;
+        height: auto;
+        padding: 15px;
+    }
+
+    img {
+        width: 180px;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    h3 {
+        width: 90%;
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .generate-button {
+        width: 180px;
+        height: 38px;
+        font-size: 10pt;
     }
 }

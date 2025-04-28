@@ -169,124 +169,93 @@ body {
 
 
 @media screen and (max-width: 1024px) {
-    .profile img {
-        width: 400px;
-    }
+  .vintage-header {
+    gap: 2rem;
+  }
 
-    .welcome-msg h1 {
-        font-size: 2.2rem;
-    }
+  .left-img, .right-img {
+    width: 100px;
+  }
 
-    .welcome-msg h2 {
-        font-size: 1.5rem;
-    }
+  .welcome-text h1 {
+    font-size: 2rem;
+  }
 
-    .dash-btn {
-        font-size: 1.1rem;
-        width: 240px;
-        padding: 0.9rem 2rem;
-    }
+  .welcome-text h2 {
+    font-size: 1.4rem;
+  }
+
+  .dash-btn {
+    font-size: 1.1rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .dashboard-layout {
-        flex-direction: column;
-        gap: 2.5rem;
-    }
+  .vintage-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-    .profile img {
-        width: 300px;
-    }
+  .dashboard-grid {
+    flex-direction: column;
+    gap: 3rem;
+  }
 
-    .dash-btn {
-        font-size: 1rem;
-        width: 220px;
-        padding: 0.8rem 1.5rem;
-    }
+  .dash-btn {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
 
-    .welcome-msg h1 {
-        font-size: 1.8rem;
-    }
+  .ai-toggle {
+    bottom: 20px;
+    right: 20px;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+  }
 
-    .welcome-msg h2 {
-        font-size: 1.3rem;
-    }
+  .ai-popup {
+    right: 10px;
+    left: 10px;
+    bottom: 90px;
+  }
 
-    .ai-popup {
-        right: 10px;
-        left: 10px;
-        bottom: 100px;
-        width: auto;
-    }
+  .ai-popup textarea {
+    height: 70px;
+  }
 
-    .ai-popup textarea {
-        height: 70px;
-        font-size: 0.9rem;
-    }
-
-    .ai-popup button {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-
-    .ai-response {
-        font-size: 0.9rem;
-    }
-
-    .ai-toggle {
-        width: auto;
-        height: auto;
-        font-size: 0.9rem;
-        padding: 10px 16px;
-        bottom: 20px;
-        right: 20px;
-    }
+  .ai-popup button {
+    font-size: 0.9rem;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .profile img {
-        width: 240px;
-    }
+  .welcome-text h1 {
+    font-size: 1.7rem;
+  }
 
-    .dash-btn {
-        font-size: 0.95rem;
-        width: 200px;
-        padding: 0.75rem 1rem;
-    }
+  .welcome-text h2 {
+    font-size: 1.1rem;
+  }
 
-    .welcome-msg h1 {
-        font-size: 1.5rem;
-    }
+  .dash-btn {
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+  }
 
-    .welcome-msg h2 {
-        font-size: 1.1rem;
-    }
+  .left-img, .right-img {
+    width: 80px;
+  }
 
-    .dashboard-container {
-        padding: 1rem 1rem;
-    }
+  .page-bottom {
+    width: 300px;
+  }
 
-    .dashboard-layout{
-        margin-bottom: 50px;
-    }
+  .ai-toggle {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
 
-    .ai-popup {
-        padding: 15px;
-        max-width: 100%;
-        font-size: 0.85rem;
-        bottom: 90px;
-    }
-
-    .ai-popup textarea {
-        height: 65px;
-    }
-
-    .ai-popup button {
-        padding: 8px;
-    }
-
-    .ai-toggle {
-        font-size: 0.85rem;
-        padding: 8px 14px;
-    }
+  .ai-popup textarea {
+    height: 65px;
+  }
 }
