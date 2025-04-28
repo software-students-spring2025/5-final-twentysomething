@@ -31,10 +31,17 @@ OPENROUTER_SYSTEM_PROMPT = (
     "Format it exactly like this:\n<drink name>\n<one-sentence explanation>")
 
 # connect to MongoDB
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["mydb"]
-users = db["users"]
-additional_drinks = db["additional_drinks"]
+if os.environ.get("FLASK_ENV") != "testing":
+    client = MongoClient(os.getenv("MONGO_URI"))
+    db = client["mydb"]
+    users = db["users"]
+    additional_drinks = db["additional_drinks"]
+else:
+    client = None
+    db = None
+    users = None
+    additional_drinks = None
+
 
 
 @app.route("/")
