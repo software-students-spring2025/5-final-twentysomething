@@ -377,7 +377,6 @@ def test_post_save_recipe(mock_find_drinks, mock_find_user, client_fixture):
 
 
 # tests for custom drink route
-
 def test_custom_redirect_if_not_logged_in_get(client_fixture):
     """
     Test that /custom redirects to login page if not logged in (GET).
@@ -555,6 +554,364 @@ def test_search_with_query(client_fixture):
     response = client_fixture.get("/search?query=Mojito")
     assert response.status_code == 200
     assert b"Recommended Cocktails" in response.data  # could also check "Mojito" but depends on your mock DB
+
+
+@patch("app.users.find_one")
+def test_search_with_saved_drinks_matching(mock_find_user, client_fixture):
+    """
+    Test searching where a saved drink matches the query.
+    """
+    session(client_fixture)
+
+    mock_find_user.return_value = {
+        "username": "testuser",
+        "saved_drinks": [{
+            "id": "99999",
+            "strDrink": "Mojito",
+            "strDrinkThumb": "http://example.com/mojito.jpg"
+        }]
+    }
+
+    response = client_fixture.get("/search?query=mojito")
+    assert response.status_code == 200
+    assert b"Mojito" in response.data
+
+
+@patch("app.users.find_one")
+def test_search_with_saved_drinks_no_match(mock_find_user, client_fixture):
+    """
+    Test searching where no saved drink matches the query.
+    """
+    session(client_fixture)
+
+    mock_find_user.return_value = {
+        "username": "testuser",
+        "saved_drinks": [{
+            "id": "99999",
+            "strDrink": "Gin Tonic",
+            "strDrinkThumb": "http://example.com/gin.jpg"
+        }]
+    }
+
+    response = client_fixture.get("/search?query=mojito")
+    assert response.status_code == 200
+    assert b"Recommended Cocktails" in response.data
+
+
+@patch("requests.get")
+@patch("app.users.find_one")
+def test_search_api_failure(mock_find_user, mock_requests_get, client_fixture):
+    """
+    Test search when external API fails.
+    """
+    session(client_fixture)
+
+    mock_find_user.return_value = {
+        "username": "testuser",
+        "saved_drinks": []
+    }
+
+    mock_requests_get.side_effect = requests.exceptions.RequestException
+
+    response = client_fixture.get("/search?query=mojito")
+    assert response.status_code == 200
+    assert b"Recommended Cocktails" in response.data
+
+# tests for /browse/<letter> route 
+@patch("app.additional_drinks.find")
+@patch("requests.get")
+@patch("app.users.find_one")
+def test_browse_by_letter_success(mock_find_user, mock_requests_get, mock_mongo_find, client_fixture):
+    session(client_fixture)
+
+    mock_mongo_find.return_value = [{
+        "idDrink": "12345",
+        "strDrink": "Apple Martini",
+        "strDrinkThumb": "http://example.com/apple.jpg"
+    }]
+
+    mock_find_user.return_value = {
+        "username": "testuser",
+        "saved_drinks": [{
+            "id": "67890",
+            "strDrink": "Apricot Sour",
+            "strDrinkThumb": "http://example.com/apricot.jpg"
+        }]
+    }
+
+    mock_requests_get.return_value.status_code = 200
+    mock_requests_get.return_value.json.return_value = {
+        "drinks": [
+            {
+                "idDrink": "54321",
+                "strDrink": "Amaretto Sour",
+                "strDrinkThumb": "http://example.com/amaretto.jpg"
+            }
+        ]
+    }
+
+    response = client_fixture.get("/browse/a")
+    assert response.status_code == 200
+    assert b"Apple Martini" in response.data
+    assert b"Apricot Sour" in response.data
+    assert b"Amaretto Sour" in response.data
+
+
+@patch("app.additional_drinks.find")
+@patch("requests.get")
+@patch("app.users.find_one")
+def test_browse_by_letter_no_mongo_drinks(mock_find_user, mock_requests_get, mock_mongo_find, client_fixture):
+    session(client_fixture)
+
+    mock_mongo_find.return_value = []  # no mongo drinks
+
+    mock_find_user.return_value = {"username": "testuser", "saved_drinks": []}
+
+    mock_requests_get.return_value.status_code = 200
+    mock_requests_get.return_value.json.return_value = {
+        "drinks": [
+            {
+                "idDrink": "54321",
+                "strDrink": "Amaretto Sour",
+                "strDrinkThumb": "http://example.com/amaretto.jpg"
+            }
+        ]
+    }
+
+    response = client_fixture.get("/browse/a")
+    assert response.status_code == 200
+    assert b"Amaretto Sour" in response.data
+
+
+@patch("app.additional_drinks.find")
+@patch("requests.get")
+@patch("app.users.find_one")
+def test_browse_by_letter_api_error(mock_find_user, mock_requests_get, mock_mongo_find, client_fixture):
+    session(client_fixture)
+
+    mock_mongo_find.return_value = []  # no mongo drinks
+    mock_find_user.return_value = {"username": "testuser", "saved_drinks": []}
+
+    mock_requests_get.side_effect = requests.exceptions.RequestException
+
+    response = client_fixture.get("/browse/a")
+    assert response.status_code == 200
+    assert b"Recommended Cocktails" in response.data  # page loads empty list
+
+
+# tests for /recipe/<recipe_id> route
+@patch("app.additional_drinks.find_one")
+@patch("app.users.find_one")
+def test_recipe_found_in_mongo(mock_find_user, mock_find_drink, client_fixture):
+    session(client_fixture)
+    recipe_id = "12345"
+
+    mock_find_drink.return_value = {
+        "idDrink": recipe_id,
+        "strDrinkThumb": "http://example.com/image.jpg",
+        "strIngredient1": "Vodka",
+        "strMeasure1": "2 oz"
+    }
+    mock_find_user.return_value = {"username": "testuser", "saved_drinks": []}
+
+    response = client_fixture.get(f"/recipe/{recipe_id}")
+    assert response.status_code == 200
+    assert b"Vodka" in response.data
+    assert b"2 oz" in response.data
+    assert b"image.jpg" in response.data
+
+
+@patch("app.additional_drinks.find_one")
+@patch("app.users.find_one")
+def test_recipe_found_in_custom_saved(mock_find_user, mock_find_drink, client_fixture):
+    session(client_fixture)
+    recipe_id = "17841"  # custom drink ID
+
+    mock_find_drink.return_value = None
+    mock_find_user.return_value = {
+        "username": "testuser",
+        "saved_drinks": [{
+            "id": "17841",
+            "strDrinkThumb": "http://example.com/custom.jpg",
+            "strIngredient1": "Tequila",
+            "strMeasure1": "1 oz"
+        }]
+    }
+
+    response = client_fixture.get(f"/recipe/{recipe_id}")
+    assert response.status_code == 200
+    assert b"Tequila" in response.data
+    assert b"custom.jpg" in response.data
+
+
+@patch("app.additional_drinks.find_one")
+@patch("app.users.find_one")
+@patch("requests.get")
+def test_recipe_found_in_api(mock_requests_get, mock_find_user, mock_find_drink, client_fixture):
+    session(client_fixture)
+    recipe_id = "11000"
+
+    mock_find_drink.return_value = None
+    mock_find_user.return_value = {"username": "testuser", "saved_drinks": []}
+
+    mock_requests_get.return_value.status_code = 200
+    mock_requests_get.return_value.json.return_value = {
+        "drinks": [{
+            "idDrink": "11000",
+            "strDrinkThumb": "http://example.com/api_drink.jpg",
+            "strIngredient1": "Gin",
+            "strMeasure1": "50ml"
+        }]
+    }
+
+    response = client_fixture.get(f"/recipe/{recipe_id}")
+    assert response.status_code == 200
+    assert b"Gin" in response.data
+    assert b"50ml" in response.data
+    assert b"api_drink.jpg" in response.data
+
+
+@patch("app.additional_drinks.find_one")
+@patch("app.users.find_one")
+@patch("requests.get")
+def test_recipe_not_found_api(mock_requests_get, mock_find_user, mock_find_drink, client_fixture):
+    session(client_fixture)
+    recipe_id = "11000"
+
+    mock_find_drink.return_value = None
+    mock_find_user.return_value = {"username": "testuser", "saved_drinks": []}
+
+    mock_requests_get.return_value.status_code = 200
+    mock_requests_get.return_value.json.return_value = {
+        "drinks": None  # simulate drink not found
+    }
+
+    response = client_fixture.get(f"/recipe/{recipe_id}")
+    assert response.status_code == 200
+    assert b"Recipe not found" in response.data
+
+
+@patch("app.additional_drinks.find_one")
+@patch("app.users.find_one")
+@patch("requests.get")
+def test_recipe_api_error(mock_requests_get, mock_find_user, mock_find_drink, client_fixture):
+    session(client_fixture)
+    recipe_id = "11000"
+
+    mock_find_drink.return_value = None
+    mock_find_user.return_value = {"username": "testuser", "saved_drinks": []}
+    mock_requests_get.side_effect = requests.exceptions.RequestException
+
+    response = client_fixture.get(f"/recipe/{recipe_id}")
+    assert response.status_code == 200
+    assert b"Recipe not found" in response.data
+
+# --- tests for /save_and_redirect and /unsave routes ---
+
+def test_save_and_redirect_requires_login(client_fixture):
+    """
+    Ensure save_and_redirect redirects if not logged in.
+    """
+    response = client_fixture.post("/save_and_redirect/12345", follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+def test_unsave_requires_login(client_fixture):
+    """
+    Ensure unsave redirects if not logged in.
+    """
+    response = client_fixture.post("/unsave/12345", follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+
+@patch("app.users.find_one")
+@patch("app.additional_drinks.find_one")
+def test_save_and_redirect_saved_from_mongo(mock_find_drink, mock_find_user, client_fixture):
+    """
+    Test saving a custom drink from MongoDB (id > 17840).
+    """
+    session(client_fixture)
+    recipe_id = "17841"  # custom drink
+
+    mock_find_user.return_value = {"_id": 1, "username": "testuser"}
+    mock_find_drink.return_value = {
+        "idDrink": recipe_id,
+        "strDrink": "Custom Cocktail",
+        "strDrinkThumb": "http://example.com/custom.jpg"
+    }
+
+    response = client_fixture.post(f"/save_and_redirect/{recipe_id}", follow_redirects=True)
+    assert response.status_code == 200
+    assert b"saved" in response.data or b"Saved" in response.data
+
+
+@patch("app.users.find_one")
+@patch("requests.get")
+def test_save_and_redirect_saved_from_api(mock_requests_get, mock_find_user, client_fixture):
+    """
+    Test saving a drink fetched from CocktailDB (id <= 17840).
+    """
+    session(client_fixture)
+    recipe_id = "11000"
+
+    mock_find_user.return_value = {"_id": 1, "username": "testuser"}
+    mock_requests_get.return_value.status_code = 200
+    mock_requests_get.return_value.json.return_value = {
+        "drinks": [{
+            "idDrink": recipe_id,
+            "strDrink": "Mojito",
+            "strDrinkThumb": "http://example.com/mojito.jpg"
+        }]
+    }
+
+    response = client_fixture.post(f"/save_and_redirect/{recipe_id}", follow_redirects=True)
+    assert response.status_code == 200
+    assert b"saved" in response.data or b"Saved" in response.data
+
+
+@patch("app.users.find_one")
+@patch("requests.get")
+def test_save_and_redirect_api_error(mock_requests_get, mock_find_user, client_fixture):
+    """
+    Test API failure during save_and_redirect.
+    """
+    session(client_fixture)
+    recipe_id = "11000"
+
+    mock_find_user.return_value = {"_id": 1, "username": "testuser"}
+    mock_requests_get.side_effect = requests.exceptions.RequestException
+
+    response = client_fixture.post(f"/save_and_redirect/{recipe_id}", follow_redirects=True)
+    assert response.status_code == 200
+
+
+@patch("app.users.find_one")
+@patch("app.users.update_one")
+def test_unsave_drink_success(mock_update_one, mock_find_user, client_fixture):
+    """
+    Test successfully unsaving a drink.
+    """
+    session(client_fixture)
+    recipe_id = "12345"
+
+    mock_find_user.return_value = {
+        "_id": 1,
+        "username": "testuser",
+        "saved_drinks": [{
+            "id": "12345",
+            "strDrink": "Gin Tonic",
+            "strDrinkThumb": "http://example.com/gin.jpg"
+        }]
+    }
+    mock_update_one.return_value = None
+
+    response = client_fixture.post(f"/unsave/{recipe_id}", follow_redirects=True)
+    assert response.status_code == 200
+    mock_update_one.assert_called_once_with(
+        {"_id": 1},
+        {"$pull": {"saved_drinks": {"id": recipe_id}}}
+    )
 
 
 # --- tests for /journal route ---
