@@ -134,6 +134,7 @@ input{
 .generate-button:hover{
     background-color: #F2DFBA;
     color: #150C04;
+    border: solid 1px #1F0F08;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
 }
