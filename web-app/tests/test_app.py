@@ -277,6 +277,7 @@ def test_saved_redirect_if_not_logged_in(client_fixture):
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
     
+
 # tests for recipe route
 def test_recipe_redirect_if_not_logged_in(client_fixture):
     response = client_fixture.get("/recipe/12345", follow_redirects=False)
@@ -373,6 +374,103 @@ def test_post_save_recipe(mock_find_drinks, mock_find_user, client_fixture):
 
     assert response.status_code == 200
     assert b"saved" in response.data
+
+
+# tests for custom drink route
+
+def test_custom_redirect_if_not_logged_in_get(client_fixture):
+    """
+    Test that /custom redirects to login page if not logged in (GET).
+    """
+    response = client_fixture.get("/custom", follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+
+def test_custom_redirect_if_not_logged_in_post(client_fixture):
+    """
+    Test that /custom redirects to login page if not logged in (POST).
+    """
+    response = client_fixture.post("/custom", data={}, follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
+
+def test_custom_page_loads_logged_in(client_fixture):
+    """
+    Test that /custom page loads properly when logged in (GET).
+    """
+    session(client_fixture)
+    response = client_fixture.get("/custom")
+    assert response.status_code == 200
+    assert b"Drink Name" in response.data
+    assert b"Save Recipe" in response.data
+
+@patch("app.users")
+def test_custom_post_create_new_drink_first_time(mock_users, client_fixture):
+    """
+    Test POSTing a custom drink when user has NO previous saved drinks.
+    """
+    session(client_fixture)
+
+    mock_users.find_one.return_value = {"username": "testing_user", "saved_drinks": []}
+    mock_users.update_one.return_value = None  # simulate successful update
+
+    form_data = {
+        "strDrink": "MyCustomDrink",
+        "strGlass": "Highball glass",
+        "strInstructions": "Mix well.",
+        "strDrinkThumb": "http://example.com/image.jpg",
+        "strMeasure1": "1 oz",
+        "strIngredient1": "Vodka"
+    }
+
+    for i in range(2, 16):
+        form_data[f"strMeasure{i}"] = ""
+        form_data[f"strIngredient{i}"] = ""
+
+    response = client_fixture.post("/custom", data=form_data, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"saved" in response.data or b"Saved" in response.data
+    mock_users.update_one.assert_called_once()
+
+
+@patch("app.users")
+def test_custom_post_create_new_drink_with_existing_ids(mock_users, client_fixture):
+    """
+    Test POSTing a custom drink when user already has previous saved drinks.
+    """
+    session(client_fixture)
+
+    # simulate user already having saved drinks
+    mock_users.find_one.return_value = {
+        "username": "testing_user",
+        "saved_drinks": [
+            {"id": "17841", "strDrink": "TestDrink1"},
+            {"id": "17845", "strDrink": "TestDrink2"},
+        ]
+    }
+    mock_users.update_one.return_value = None  # simulate successful update
+
+    form_data = {
+        "strDrink": "AnotherCustomDrink",
+        "strGlass": "Martini glass",
+        "strInstructions": "Shake well.",
+        "strDrinkThumb": "http://example.com/martini.jpg",
+        "strMeasure1": "2 oz",
+        "strIngredient1": "Gin"
+    }
+    for i in range(2, 16):
+        form_data[f"strMeasure{i}"] = ""
+        form_data[f"strIngredient{i}"] = ""
+
+    response = client_fixture.post("/custom", data=form_data, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"saved" in response.data or b"Saved" in response.data
+    mock_users.update_one.assert_called_once()
+
 
 # tests for save_and_redirect and unsave_and_redirect routes
 def test_redirect_if_not_logged_in(client_fixture):
@@ -531,6 +629,31 @@ def test_upload_image_success(client_fixture):
     assert response.status_code == 200
     assert response.is_json
     assert response.get_json()["status"] == "success"
+
+
+def test_upload_image_error_case(client_fixture):
+    """
+    Test uploading invalid image data returns error.
+    """
+    session(client_fixture)
+    
+    response = client_fixture.post("/upload_image",
+                                   json={"image": "INVALID_DATA", "caption": "Bad upload"},
+                                   follow_redirects=True)
+
+    assert response.status_code == 200
+    assert response.is_json
+    assert response.get_json()["status"] == "error"
+
+
+def test_upload_image_redirect_if_not_logged_in(client_fixture):
+    """
+    Test that /upload_image redirects to login page if not logged in.
+    """
+    response = client_fixture.post("/upload_image", json={"image": "fake"}, follow_redirects=False)
+    assert response.status_code == 302
+    assert "/login" in response.headers["Location"]
+
 
 # test for /chat route
 @patch("app.openai.OpenAI")
