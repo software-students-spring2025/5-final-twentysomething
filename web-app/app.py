@@ -427,40 +427,45 @@ def save_and_redirect(recipe_id):
         return redirect(url_for("login"))
 
     user = users.find_one({"username": session["username"]})
-    if user:
-        try:
-            if int(recipe_id) <= 17840:
-                response = requests.get(
-                    f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}"
-                )
-                response.raise_for_status()
-                data = response.json()
-                cocktail = data['drinks'][0]
+    if not user:
+        return redirect(url_for("login"))
 
-                users.update_one({"_id": user["_id"]}, {
-                    "$addToSet": {
-                        "saved_drinks": {
-                            "id": str(cocktail['idDrink']),
-                            "strDrink": cocktail['strDrink'],
-                            "strDrinkThumb": cocktail['strDrinkThumb']
-                        }
-                    }
-                })
-            else:
-                cocktail = additional_drinks.find_one({"idDrink": recipe_id})
+    cocktail = None
 
-                users.update_one({"_id": user["_id"]}, {
-                    "$addToSet": {
-                        "saved_drinks": {
-                            "id": str(cocktail['idDrink']),
-                            "strDrink": cocktail['strDrink'],
-                            "strDrinkThumb": cocktail['strDrinkThumb']
-                        }
-                    }
-                })
+    try:
+        # CASE 1: CocktailDB API
+        if int(recipe_id) <= 17840:
+            response = requests.get(
+                f"https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={recipe_id}"
+            )
+            response.raise_for_status()
+            data = response.json()
 
-        except requests.exceptions.RequestException as e:
-            print("Error fetching cocktail data:", e)
+            if data.get("drinks"):
+                cocktail = data["drinks"][0]
+
+        # CASE 2: MongoDB drink
+        else:
+            cocktail = additional_drinks.find_one({"idDrink": recipe_id})
+
+        # final check
+        if not cocktail:
+            print(f"No cocktail found for recipe_id {recipe_id}")
+            return redirect(url_for('saved'))
+
+        users.update_one({"_id": user["_id"]}, {
+            "$addToSet": {
+                "saved_drinks": {
+                    "id": str(cocktail.get('idDrink', recipe_id)),
+                    "strDrink": cocktail.get('strDrink', 'Unknown Drink'),
+                    "strDrinkThumb": cocktail.get('strDrinkThumb', ''),
+                    "strInstructions": cocktail.get('strInstructions', ''),
+                }
+            }
+        })
+
+    except Exception as e:
+        print(f"Error saving drink: {e}")
 
     return redirect(url_for('saved'))
 
@@ -599,6 +604,25 @@ def take_picture():
 def journal():
     journal_entries = session.get("journal_entries", [])
     return render_template("journal.html", journal_entries=journal_entries)
+
+
+@app.route("/delete_entry/<int:entry_id>", methods=["POST"])
+def delete_entry(entry_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    journal_entries = session.get("journal_entries", [])
+
+    if 0 <= entry_id < len(journal_entries):
+        entry = journal_entries.pop(entry_id)
+        session["journal_entries"] = journal_entries
+
+        # Remove the file physically from static/uploads
+        image_path = entry.get("image_url", "").lstrip('/')
+        if image_path and os.path.exists(image_path):
+            os.remove(image_path)
+
+    return redirect(url_for("journal"))
 
 
 @app.route("/custom", methods=['GET', 'POST'])

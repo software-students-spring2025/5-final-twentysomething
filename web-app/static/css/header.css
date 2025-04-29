@@ -13,12 +13,18 @@ body {
 .navbar {
   background-color: #150C04;
   height: 90px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
   border-bottom: 2px solid #F0DAB4;
 }
+
 
 .title {
   font-family: 'Playfair Display SC', serif;
@@ -89,6 +95,18 @@ body {
 .sidebar a:hover {
   transform: scale(1.05);
   color: #d6c08c;
+}
+
+.sidebar p {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 600;
+  color:  #8e6a55;
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.08rem;
+  text-align: left;
+  margin: 1rem 0;
 }
 
 .main-content {

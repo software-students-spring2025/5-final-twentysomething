@@ -100,23 +100,24 @@
                 }
 
                 const html = `
-                    <a href="/recipe/${drink_data.idDrink}" class="link">
+                    <a href="/recipe/${drink_data.idDrink}" class="result-link">
+                        <div class="result hoverable">
                         <h3 class="output-title">${drink_data.strDrink}</h3>
+                        <div id="image" class="box">
+                            <img src="${drink_data.strDrinkThumb}" alt="${drink_data.strDrink}"/>
+                        </div>
+                        <div id="recipe" class="box">
+                            <h4>Ingredients</h4>
+                            <ul>${ingredients}</ul>
+                            <br>
+                            <h4>Instructions</h4>
+                            <p>${instructions}</p>
+                        </div>
+                        </div>
                     </a>
-                    <div id="image" class="box">
-                        <img src="${drink_data.strDrinkThumb}"/>
-                    </div>
-        
-                    <div id="recipe" class="box">
-                        <h4>Ingredients</h4>
-                        <ul>${ingredients}</ul>
-                        <br>
-                        <h4>Instructions</h4>
-                        <p>${instructions}</p>
-                    </div>
                 `
-
                 document.getElementById("result").innerHTML = html;
+
             }
         }
 
